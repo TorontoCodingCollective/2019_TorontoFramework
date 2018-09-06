@@ -3,8 +3,6 @@ package robot.commands.drive;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import robot.Robot;
-import robot.commands.drive.DriveDirectionCommand;
-import robot.subsystems.ChassisSubsystem;
 
 /**
  *
@@ -46,24 +44,9 @@ public class DefaultChassisCommand extends Command {
 		}
 
 		
-		if (Robot.oi.getPov() != -1) {
-			Scheduler.getInstance().add(new RotateToAngleCommand(Robot.oi.getPov(), 0.5));
+		if (Robot.oi.getPovAngle() != -1) {
+			Scheduler.getInstance().add(new RotateToAngleCommand(Robot.oi.getPovAngle(), 0.5));
 		}
-
-
-		/*if (Robot.oi.getForwardThrust()) {
-			Scheduler.getInstance().add(new DriveDistanceCommand(50, Robot.chassisSubsystem.getGryoAngle(), 0.5, 5.0, true));
-		}
-
-		if (Robot.oi.getStartDriveDirection()) {
-			Scheduler.getInstance().add(new DriveDirectionCommand(0, .8, 10));
-		}
-		if (Robot.oi.getArcCommand() == 90){
-			Scheduler.getInstance().add(new ArcCommand(200, Robot.chassisSubsystem.getGryoAngle(), Robot.chassisSubsystem.getGryoAngle() + 90, 1));
-		}
-		if (Robot.oi.getArcCommand() == 270){
-			Scheduler.getInstance().add(new ArcCommand(200, Robot.chassisSubsystem.getGryoAngle(), Robot.chassisSubsystem.getGryoAngle() - 90, 1));
-		}*/
 
 		double speed = Robot.oi.getSpeed();		
 		double turn  = Robot.oi.getTurn();
@@ -109,35 +92,14 @@ public class DefaultChassisCommand extends Command {
 			leftSpeed = scaledSpeed ;
 			rightSpeed = scaledSpeed - (turn / 2);
 		}
-		//System.out.println(speed);
-		//System.out.println(turn);
 
 		// automatic high gear
 		if (Robot.oi.getTurboOn()) {
-
-			//System.out.println(leftSpeed + " " + rightSpeed + " " + getEncoderSpeed()); 
-/*			if (Math.abs(Robot.chassisSubsystem.getEncoderSpeed()) >= robot.RobotConst.MAX_LOW_GEAR_SPEED * 0.4 
-				&& (   (leftSpeed >= 0 && rightSpeed >= 0) 
-					|| (leftSpeed <= 0 && rightSpeed <= 0) ) ) { */
-				Robot.chassisSubsystem.enableTurbo();
-		/*	}
-			 
-
-			if (Math.abs(Robot.chassisSubsystem.getEncoderSpeed()) <= robot.RobotConst.MAX_LOW_GEAR_SPEED * 0.2) {
-				Robot.chassisSubsystem.disableTurbo(); 
-				// System.out.println("disable turbo 1"); 
-			} 
-			if (! ((leftSpeed >= 0 && rightSpeed >= 0) 
-				|| (leftSpeed <= 0 && rightSpeed <= 0))) { 
-				Robot.chassisSubsystem.disableTurbo();
-				//System.out.println("disable turbo 3"); 
-			}*/
-
+			Robot.chassisSubsystem.enableTurbo();
 		}
 		else {
 			Robot.chassisSubsystem.disableTurbo(); 
 		}
-
 
 		Robot.chassisSubsystem.setSpeed(leftSpeed, rightSpeed);
 	}

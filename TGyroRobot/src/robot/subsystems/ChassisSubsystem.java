@@ -4,7 +4,7 @@ import com.torontocodingcollective.sensors.encoder.TEncoder;
 import com.torontocodingcollective.sensors.gyro.TNavXGyro;
 import com.torontocodingcollective.sensors.gyro.TSpiGyro;
 import com.torontocodingcollective.speedcontroller.TCanSpeedController;
-import com.torontocodingcollective.speedcontroller.TCanSpeedController.TCanSpeedControllerType;
+import com.torontocodingcollective.speedcontroller.TCanSpeedControllerType;
 import com.torontocodingcollective.subsystem.TGryoDriveSubsystem;
 
 import edu.wpi.first.wpilibj.Solenoid;
@@ -25,9 +25,6 @@ public class ChassisSubsystem extends TGryoDriveSubsystem {
 
 	private boolean turboEnabled = false;
 
-	private double leftSpeedSetpoint = 0;
-	private double rightSpeedSetpoint = 0;
-	
 	public ChassisSubsystem() {
 
 		// Uncomment this constructor to use PWM based Speed controllers
@@ -78,64 +75,6 @@ public class ChassisSubsystem extends TGryoDriveSubsystem {
 	@Override
 	public void setSpeed(double leftSpeedSetpoint, double rightSpeedSetpoint) {
 		super.setSpeed(leftSpeedSetpoint, rightSpeedSetpoint);
-	//	this.leftSpeedSetpoint = leftSpeedSetpoint;
-	//	this.rightSpeedSetpoint = rightSpeedSetpoint;
-		
-	//	updateSpeed();
-	}
-	
-	private void updateSpeed() {
-		
-		// If the PIDs are enabled, then bypass the soft drive code
-		if (speedPidsEnabled()) {
-			super.setSpeed(leftSpeedSetpoint, rightSpeedSetpoint);
-			return;
-		}
-		
-		double leftSpeed = leftMotor.get();
-		double rightSpeed = rightMotor.get();
-		
-		if (Math.abs(leftSpeedSetpoint - leftSpeed) < .02) {
-			leftSpeed = leftSpeedSetpoint;
-		}
-		else if (Math.abs(leftSpeedSetpoint - leftSpeed) > .8) {
-			if (leftSpeedSetpoint > leftSpeed) {
-				leftSpeed += .05;
-			}
-			else {
-				leftSpeed -= .05;
-			}
-		}
-		else {
-			if (leftSpeedSetpoint > leftSpeed) {
-				leftSpeed += .03;//.02
-			}
-			else {
-				leftSpeed -= .03;
-			}
-		}
-
-		if (Math.abs(rightSpeedSetpoint - rightSpeed) < .02) {
-			rightSpeed = rightSpeedSetpoint;
-		}
-		else if (Math.abs(rightSpeedSetpoint - rightSpeed) > .8) {
-			if (rightSpeedSetpoint > rightSpeed) {
-				rightSpeed += .05;
-			}
-			else {
-				rightSpeed -= .05;
-			}
-		}
-		else {
-			if (rightSpeedSetpoint > rightSpeed) {
-				rightSpeed += .03;
-			}
-			else {
-				rightSpeed -= .03;
-			}
-		}
-		
-		super.setSpeed(leftSpeed, rightSpeed);
 	}
 	
 	// ********************************************************************************************************************
