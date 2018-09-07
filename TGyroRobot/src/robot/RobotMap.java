@@ -13,8 +13,10 @@ public class RobotMap {
 	// Speed Controllers (CAN addresses)
 	//******************************************
 	public static final int LEFT_DRIVE_MOTOR_CAN_ADDRESS;          // TALON_SRX
+	public static final int LEFT_DRIVE_MOTOR_PDP_PORT      = 1;    // PDP POWER_PORT_ADDRESS - example only
 	public static final int RIGHT_DRIVE_MOTOR_CAN_ADDRESS;         // TALON_SRX
 
+	
 	public static final int LEFT_DRIVE_FOLLOWER_CAN_ADDRESS;       // VICTOR_SPX
 	public static final int RIGHT_DRIVE_FOLLOWER_CAN_ADDRESS;      // VICTOR_SPX
 	

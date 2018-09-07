@@ -3,8 +3,10 @@ package robot.subsystems;
 import com.torontocodingcollective.sensors.encoder.TEncoder;
 import com.torontocodingcollective.sensors.gyro.TNavXGyro;
 import com.torontocodingcollective.sensors.gyro.TSpiGyro;
+import com.torontocodingcollective.sensors.limitSwitch.TLimitSwitch;
+import com.torontocodingcollective.sensors.limitSwitch.TLimitSwitch.DefaultState;
 import com.torontocodingcollective.speedcontroller.TCanSpeedController;
-import com.torontocodingcollective.speedcontroller.TCanSpeedControllerType;
+import com.torontocodingcollective.speedcontroller.TCanSpeedController.TCanSpeedControllerType;
 import com.torontocodingcollective.subsystem.TGryoDriveSubsystem;
 
 import edu.wpi.first.wpilibj.Solenoid;
@@ -25,6 +27,8 @@ public class ChassisSubsystem extends TGryoDriveSubsystem {
 
 	private boolean turboEnabled = false;
 
+	private TLimitSwitch limitSwitch = new TLimitSwitch(1, DefaultState.TRUE);
+	
 	public ChassisSubsystem() {
 
 		// Uncomment this constructor to use PWM based Speed controllers

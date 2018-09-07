@@ -19,6 +19,14 @@ import com.torontocodingcollective.sensors.encoder.TEncoder;
  */
 public class TCanSpeedController extends TSpeedController {
 
+	public enum TCanSpeedControllerType {
+
+		/** Talon SRX see {@link TalonSRX} */
+		TALON_SRX,
+		/** Victor SPX see {@link VictorSPX} */
+		VICTOR_SPX
+	}
+
 	private final BaseMotorController canSpeedController;
 	
 	private double speedSetpoint = 0;
