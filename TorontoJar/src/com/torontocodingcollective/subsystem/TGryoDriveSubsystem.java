@@ -12,27 +12,7 @@ public abstract class TGryoDriveSubsystem extends TDriveSubsystem {
 	protected TGyro gyro;
 
 	private TGyroPID gyroPid;
-
-	/**
-	 * Drive subsystem with left/right drive and gyro.
-	 * <p>
-	 * The GyroDrive subsystem extends the basic DriveSubsystem and adds has a 
-	 * gyro.  To enable a GyroPid controller use {@link #setGyroPidGain(double, double)}
-	 * and set the PidGain to a non-zero value, and then use {@link #enableGyroPid()}
-	 * 
-	 * @param gyro that extends {@link TGyro}
-	 * @param leftMotor that extends the {@link TSpeedController}
-	 * @param rightMotor that extends {@link TSpeedController}
-	 */
-	public TGryoDriveSubsystem(
-			TGyro gyro,
-			TSpeedController leftMotor, 
-			TSpeedController rightMotor 
-			) {
-
-		this(gyro, leftMotor, rightMotor, 0.0, 0.0);
-	}
-
+	private double maxRotationSpeed;
 
 	/**
 	 * Drive subsystem with left/right drive and gyro.
@@ -51,18 +31,22 @@ public abstract class TGryoDriveSubsystem extends TDriveSubsystem {
 	 * @param gyroKI Default Integral gain for the gyro angle pid.  The 
 	 * gyro PID is displayed on the SmartDashboard and can be 
 	 * adjusted through that interface
+	 * @param maxRotationSpeed used to control the rotation of the robot
+	 * when rotating to an angle
 	 */
 	public TGryoDriveSubsystem(
 			TGyro gyro,
 			TSpeedController leftMotor, 
 			TSpeedController rightMotor, 
-			double gyroKP, double gyroKI
+			double gyroKP, double gyroKI,
+			double maxRotationSpeed
 			) {
 		super(  leftMotor, 
 				rightMotor); 
 		
 		gyroPid = new TGyroPID(gyroKP, gyroKI);
 		this.gyro = gyro;
+		this.maxRotationSpeed = maxRotationSpeed;
 	}
 
 	/**
@@ -101,7 +85,8 @@ public abstract class TGryoDriveSubsystem extends TDriveSubsystem {
 			TEncoder leftEncoder,   
 			TEncoder rightEncoder,	   
 			double speedKP, double maxEncoderSpeed,
-			double gyroKP, double gyroKI
+			double gyroKP, double gyroKI,
+			double maxRotationSpeed
 			) {
 
 		super(
@@ -113,6 +98,7 @@ public abstract class TGryoDriveSubsystem extends TDriveSubsystem {
 		
 		gyroPid = new TGyroPID(gyroKP, gyroKI);
 		this.gyro = gyroSensor;
+		this.maxRotationSpeed = maxRotationSpeed;
 	}
 
 	/**
@@ -142,7 +128,7 @@ public abstract class TGryoDriveSubsystem extends TDriveSubsystem {
 		gyroPid.enable();
 		
 	}
-
+	
 	/**
 	 * Get the current gyro angle
 	 * <p>
@@ -161,7 +147,7 @@ public abstract class TGryoDriveSubsystem extends TDriveSubsystem {
 
 		return angle;
 	}
-
+	
 	/** 
 	 * Get the GyroPid Steering
 	 */
@@ -210,6 +196,41 @@ public abstract class TGryoDriveSubsystem extends TDriveSubsystem {
 		if (kP == 0 && kI == 0) {
 			disableGyroPid();
 		}
+	}
+
+	/**
+	 * The maximum rotation speed to send to the motors
+	 * <p>
+	 * This motor output speed will be sent to both motors (in
+	 * opposite polarity) to rotate the robot to a desired angle.
+	 * <p>
+	 * NOTE: This value does not try to limit the rotational speed
+	 * in degrees per second, but provides a way to control the 
+	 * rotation by limiting the motor output when under PID control
+	 * <br>
+	 * NOTE: The maxRotationSpeed is not used when driving the 
+	 * robot manually (via the joysticks).
+	 *
+	 * @param maxRotationSpeed to use on the output motors
+	 * when rotating the robot a value of zero will be overridden
+	 * to 0.5 (half output)
+	 */
+	public void setMaxRotationSpeed(double maxRotationSpeed) {
+		this.maxRotationSpeed = maxRotationSpeed;
+	}
+
+	/**
+	 * Set the speeds on the motors.
+	 * In a TGyroDriveSubsystem, setting the speed on the 
+	 * left and right motors will disable the 
+	 * gyro drive.
+	 * <p>
+	 * {@inheritDoc TDriveSubsystem#setSpeed(double, double)}
+	 */
+	@Override
+	public void setSpeed(double leftSpeedSetpoint, double rightSpeedSetpoint) {
+		disableGyroPid();
+		super.setSpeed(leftSpeedSetpoint, rightSpeedSetpoint);
 	}
 
 	@Override

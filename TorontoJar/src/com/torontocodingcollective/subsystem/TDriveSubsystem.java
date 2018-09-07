@@ -15,18 +15,35 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public abstract class TDriveSubsystem extends TSubsystem {
 	
-	public final TSpeedController leftMotor;
+	protected final TSpeedController leftMotor;
 	protected final TSpeedController rightMotor;
 	
-	private TEncoder leftEncoder = null;
-	private TEncoder rightEncoder = null;
+	protected TEncoder leftEncoder = null;
+	protected TEncoder rightEncoder = null;
 	
 	private final TSpeedPID leftSpeedPid;  
 	private final TSpeedPID rightSpeedPid; 
 	
 	private double maxEncoderSpeed = 1.0;
 	
-	boolean speedPidsActive = false;
+	boolean speedPidsEnabled = false;
+
+	/**
+	 * Drive subsystem with left/right drive.
+	 * <p>
+	 * The drive subsystem has pids that are initialized to 
+	 * disabled.  Use the {@link #enableSpeedPids()} and {@link #disableSpeedPids()}
+	 * routines to set the PIDs on and off
+	 * 
+	 * @param leftMotor that implements the TSpeedController interface
+	 * @param rightMotor that implements the TSpeedController interface
+	 */
+	public TDriveSubsystem(
+			TSpeedController leftMotor,
+			TSpeedController rightMotor) {
+		
+		this(leftMotor, rightMotor, null, null, 0, 0);
+	}
 
 	/**
 	 * Drive subsystem with left/right drive.
@@ -60,25 +77,8 @@ public abstract class TDriveSubsystem extends TSubsystem {
 		
 		leftSpeedPid  = new TSpeedPID(kP);
 		rightSpeedPid = new TSpeedPID(kP);
-		
-		disableSpeedPids();
-	}
 
-	/**
-	 * Drive subsystem with left/right drive.
-	 * <p>
-	 * The drive subsystem has pids that are initialized to 
-	 * disabled.  Use the {@link #enableSpeedPids()} and {@link #disableSpeedPids()}
-	 * routines to set the PIDs on and off
-	 * 
-	 * @param leftMotor that implements the TSpeedController interface
-	 * @param rightMotor that implements the TSpeedController interface
-	 */
-	public TDriveSubsystem(
-			TSpeedController leftMotor,
-			TSpeedController rightMotor) {
-		
-		this(leftMotor, rightMotor, null, null, 0, 0);
+		speedPidsEnabled = false;
 	}
 
 	/**
@@ -93,10 +93,10 @@ public abstract class TDriveSubsystem extends TSubsystem {
 	 */
 	public void disableSpeedPids() {
 		
-		if (speedPidsActive) {
+		if (speedPidsEnabled) {
 			leftSpeedPid.disable();
 			rightSpeedPid.disable();
-			speedPidsActive = false;
+			speedPidsEnabled = false;
 		}
 	}
 	
@@ -110,42 +110,56 @@ public abstract class TDriveSubsystem extends TSubsystem {
 	 * <p>
 	 * NOTE: If the speed PIDs are already enabled,
 	 * this routine has no effect.
+	 * <br>
+	 * NOTE: If there are no encoders, speed pids cannot be enabled
 	 */
 	public void enableSpeedPids() {
+		
+		if (speedPidsEnabled) {
+			return;
+		}
 		
 		// If there are no encoders, then do not enable the PID
 		if (leftEncoder == null || rightEncoder == null) { return; }
 		
 		// If the proportional gain is not set, then do not enable the PID
-		if (leftSpeedPid.getP() == 0) { return; }
+		if (leftSpeedPid.getP() == 0 || rightSpeedPid.getP() == 0) { return; }
 		
-		if (!speedPidsActive) {
+		if (!speedPidsEnabled) {
 			leftSpeedPid.enable();
 			rightSpeedPid.enable();
-			speedPidsActive = true;
+			speedPidsEnabled = true;
 		}
-	}
-	
-	public boolean speedPidsEnabled() {
-		return speedPidsActive;
 	}
 	
 	/**
 	 * Get the raw distance covered since the last encoder reset
-	 * @return
+	 * <p>
+	 * The distance returned is the average distance of the left
+	 * and right encoders.
+	 * 
+	 * @return average of the left and right distance in counts
+	 * or -1 if there are no encoders.
 	 */
 	public int getEncoderDistance() {
+		
 		if (leftEncoder == null || rightEncoder == null) { 
-			return 0;
+			return -1;
 		}
 		
 		return (leftEncoder.get() + rightEncoder.get()) / 2;
 	}
 	
+	/**
+	 * Get the average speed of the left and right encoders in 
+	 * counts/second
+	 * @return average of the left and right motor speeds or 
+	 * -1 if there are no encoders.
+	 */
 	public double getEncoderSpeed() {
 
 		if (leftEncoder == null || rightEncoder == null) { 
-			return 0;
+			return -1;
 		}
 		
 		return (leftEncoder.getRate() + rightEncoder.getRate()) / 2.0d;
@@ -214,7 +228,8 @@ public abstract class TDriveSubsystem extends TSubsystem {
 		
 		setEncoders(leftEncoder, leftInverted, rightEncoder, rightInverted);
 		
-		setPidGain(kP);
+		setMaxEncoderSpeed(maxEncoderSpeed);
+		setSpeedPidGain(kP);
 	}
 	
 	/**
@@ -234,26 +249,16 @@ public abstract class TDriveSubsystem extends TSubsystem {
 	 * when there is a gear shifting robot and the max encoder speed changes
 	 * between the gears and the proportional control value changes.
 	 * 
-	 * @param rawEncoderSpeed
+	 * @param maxEncoderSpeed the maximum speed of the encoder when the output
+	 * is driven at full value under a typical load scenario.
+	 * @param kP the proportional gain to use for the speed controllers.  This
+	 * parameter will change the speed pid gain, but will not change whether 
+	 * or not the speed pids are enabled.
 	 */
-	public void setMaxEncoderSpeed(double rawEncoderSpeed, double kP) {
-		this.maxEncoderSpeed = rawEncoderSpeed;
-		setPidGain(kP);
-	}
-
-	/**
-	 * Set the Pid gain for the PID controller and disable the 
-	 * pids if the gain is set to zero.
-	 * @param kP
-	 */
-	private void setPidGain(double kP) {
-		
-		leftSpeedPid.setP(kP);
-		rightSpeedPid.setP(kP);
-		
-		if (kP == 0) {
-			disableSpeedPids();
-		}
+	
+	public void setMaxEncoderSpeed(double maxEncoderSpeed, double kP) {
+		setMaxEncoderSpeed(maxEncoderSpeed);
+		setSpeedPidGain(kP);
 	}
 	
 	/**
@@ -266,26 +271,50 @@ public abstract class TDriveSubsystem extends TSubsystem {
 	 */
 	public void setSpeed(double leftSpeedSetpoint, double rightSpeedSetpoint) {
 
-		if (speedPidsActive) {
+		if (speedPidsEnabled) {
 
+			// If the PIDs are enabled, then only change the setpoint
+			// and allow the periodic update to set the speed controller output
 			leftSpeedPid.setSetpoint(leftSpeedSetpoint);
 			rightSpeedPid.setSetpoint(rightSpeedSetpoint);
 		
 		}
 		else {
 			
+			// If the speed PIDs are disabled, then drive the motors
+			// with the setpoint.
 			leftMotor.set(leftSpeedSetpoint);
 			rightMotor.set(rightSpeedSetpoint);
 
 		}
 	}
+
+	/**
+	 * Set the Pid gain for the PID controller and disable the 
+	 * pids if the gain is set to zero.
+	 * @param kP
+	 */
+	public void setSpeedPidGain(double kP) {
+		
+		leftSpeedPid.setP(kP);
+		rightSpeedPid.setP(kP);
+		
+		if (kP == 0) {
+			disableSpeedPids();
+		}
+	}
+	
+	public boolean speedPidsEnabled() {
+		return speedPidsEnabled;
+	}
 	
 	public void updatePeriodic() {
 
+		// Only update the encoders and pids if there are encoders.
 		if (leftEncoder != null && rightEncoder != null) {
 
 			// Update all of the PIDS
-			if (speedPidsActive) {
+			if (speedPidsEnabled) {
 				
 				// Speed PID calculations require a normalized rate
 				leftSpeedPid .calculate(leftEncoder.getRate() /maxEncoderSpeed);
@@ -294,31 +323,24 @@ public abstract class TDriveSubsystem extends TSubsystem {
 				leftMotor .set(leftSpeedPid.get());
 				rightMotor.set(rightSpeedPid.get());
 	
-				SmartDashboard.putNumber("Left Motor", leftSpeedPid.get());
-				SmartDashboard.putNumber("Right Motor", rightSpeedPid.get());
-		
 			}
-			else {
 
-				SmartDashboard.putNumber("Left Motor", leftMotor.get());
-				SmartDashboard.putNumber("Right Motor", rightMotor.get());
-				
-			}
-		
 			// Update all SmartDashboard values
-			SmartDashboard.putBoolean("Speed PIDs Active", speedPidsActive);
-			SmartDashboard.putNumber("Left Enc", leftEncoder.get());
+			SmartDashboard.putNumber("Left Distance", leftEncoder.get());
 			SmartDashboard.putNumber("Left Speed", leftEncoder.getRate());
-			SmartDashboard.putNumber("Right Enc", rightEncoder.get());
+			SmartDashboard.putNumber("Right Distance", rightEncoder.get());
 			SmartDashboard.putNumber("Right Speed", rightEncoder.getRate());
+			SmartDashboard.putNumber("Avg Distance", getEncoderDistance());
+			SmartDashboard.putNumber("Avg Speed", getEncoderSpeed());
 		
+			SmartDashboard.putBoolean("Speed PIDs Active", speedPidsEnabled);
 			SmartDashboard.putData("LeftPid", leftSpeedPid);
 			SmartDashboard.putData("RightPid", rightSpeedPid);
 		}
-		else {
-			SmartDashboard.putNumber("Left Motor", leftMotor.get());
-			SmartDashboard.putNumber("Right Motor", rightMotor.get());
-		}
+		
+		// Always print the current motor set speeds.
+		SmartDashboard.putNumber("Left Motor Output", leftMotor.get());
+		SmartDashboard.putNumber("Right Motor Output", rightMotor.get());
 	}
 	
 }
