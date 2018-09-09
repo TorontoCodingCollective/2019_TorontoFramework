@@ -9,77 +9,82 @@ public enum TButton {
 
 	// Joystick Controller
 	/** Button 1 */
-	ONE, 
+	ONE (1), 
 	/** Button 2 */
-	TWO, 
+	TWO (2), 
 	/** Button 3 */
-	THREE, 
+	THREE (3), 
 	/** Button 4 */
-	FOUR, 
+	FOUR (4), 
 	/** Button 5 */
-	FIVE, 
+	FIVE (5), 
 	/** Button 6 */
-	SIX,
+	SIX (6),
 	/** Button 7 */
-	SEVEN, 
+	SEVEN (7), 
 	/** Button 8 */
-	EIGHT,
+	EIGHT (8),
 	/** Button 9 */
-	NINE,
+	NINE (9),
 	/** Button 10 */
-	TEN, 	
+	TEN (10), 	
 	/** Button 11 */
-	ELEVEN, 	
+	ELEVEN (11), 	
 	/** Button 12 */
-	TWELVE,
+	TWELVE (12),
 	
 	// GameController - Logitech, XBox
 	/** XBox or Logitech Button A, equivalent to PS controllers {@link TButton#X_SYMBOL} */
-	A, 
+	A (-1), 
 	/** XBox or Logitech Button B, equivalent to PS controllers {@link TButton#CIRCLE} */
-	B, 
+	B (-1), 
 	/** XBox or Logitech Button X, equivalent to PS controllers {@link TButton#SQUARE} */
-	X, 
+	X (-1), 
 	/** XBox or Logitech Button Y, equivalent to PS controllers {@link TButton#TRIANGLE} */
-	Y, 
+	Y (-1), 
 	
     // Playstation
 	// Mapping of A, B, X, Y
 	/** Playstation Button X symbol, equivalent to XBox controllers {@link TButton#A} */
-	X_SYMBOL, 
+	X_SYMBOL (-1), 
 	/** Playstation Button Circle, equivalent to XBox controllers {@link TButton#B} */
-	CIRCLE, 
+	CIRCLE (-1), 
 	/** Playstation Button Square, equivalent to XBox controllers {@link TButton#X} */
-	SQUARE, 
+	SQUARE (-1), 
 	/** Playstation Button Triangle, equivalent to XBox controllers {@link TButton#Y} */
-	TRIANGLE,
+	TRIANGLE (-1),
 
 	/** Right Bumper */
-	RIGHT_BUMPER, 
+	RIGHT_BUMPER (-1), 
 	/** Left Bumper */
-	LEFT_BUMPER, 
+	LEFT_BUMPER (-1), 
 	/** Back Button */
-	BACK, 
+	BACK (-1), 
 	/** Start Button */
-	START,
+	START (-1),
 	
 	
 	// PS3 mapping of BACK button
 	/** Playstation 3 Select button, equivalent to XBox controllers {@link TButton#BACK} */
-	SELECT,
+	SELECT (-1),
 	
 	// PS4 
 	// Mapping of BACK and START buttons
 	/** Playstation 4 Share button, equivalent to XBox controllers {@link TButton#BACK} */
-	SHARE, 
+	SHARE (-1), 
 	/** Playstation 4 Share button, equivalent to XBox controllers {@link TButton#START} */
-	OPTIONS,
+	OPTIONS (-1),
 	
 	// Additional PS4 buttons
 	/** Playstation 4 Touch pad button */
-	TOUCHPAD, 
+	TOUCHPAD (-1), 
 	/** Playstation 4 PlayStation button */
-	PS;
+	PS (-1);
 	
+	public final int value;
+	
+	TButton(int value) {
+		this.value = value;
+	}
 
 }

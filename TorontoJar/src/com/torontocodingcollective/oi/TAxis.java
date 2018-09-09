@@ -7,5 +7,9 @@ public enum TAxis {
 	/** The X-Axis of the {@link TStick} */
 	X,
 	/** The Y-Axis of the {@link TStick} */ 
-	Y;
+	Y,
+	/** The Slider Axis of the {@link TJoystickController} */ 
+	SLIDER,
+	/** The Twist value for the {@link TJoystickController} */ 
+	TWIST;
 }

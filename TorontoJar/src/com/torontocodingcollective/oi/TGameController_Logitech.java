@@ -14,17 +14,21 @@ public class TGameController_Logitech extends TGameController {
 		case LEFT:
 			switch (axis) {
 			case X:
-				return super.getRawAxis(0);
+				return super.getFilteredRawAxis(0);
 			case Y:
-				return super.getRawAxis(1);
+				return super.getFilteredRawAxis(1);
+			default:
+				break;
 			}
 			
 		case RIGHT:
 			switch (axis) {
 			case X:
-				return super.getRawAxis(4);
+				return super.getFilteredRawAxis(4);
 			case Y:
-				return super.getRawAxis(5);
+				return super.getFilteredRawAxis(5);
+			default:
+				break;
 			}
 			
 		default: return 0.0;
@@ -81,16 +85,77 @@ public class TGameController_Logitech extends TGameController {
 	}
 	
 	@Override
+	protected String getButtonString() {
+		
+		StringBuilder sb = new StringBuilder();
+		
+		// Logitech Controllers use the A, B, X, Y buttons
+		if (getButton(TButton.A)) {
+			sb.append(" A");
+		}
+		if (getButton(TButton.B)) {
+			sb.append(" B");
+		}
+		if (getButton(TButton.X)) {
+			sb.append(" X");
+		}
+		if (getButton(TButton.Y)) {
+			sb.append(" Y");
+		}
+		if (getButton(TButton.LEFT_BUMPER)) {
+			sb.append(" LB");
+		}
+		if (getButton(TButton.RIGHT_BUMPER)) {
+			sb.append(" RB");
+		}
+		if (getButton(TButton.START)) {
+			sb.append(" Start");
+		}
+		if (getButton(TButton.BACK)) {
+			sb.append(" Back");
+		}
+		if (getButton(TStick.LEFT)) {
+			sb.append(" L-Stick");
+		}
+		if (getButton(TStick.RIGHT)) {
+			sb.append(" R-Stick");
+		}
+		
+		return sb.toString().trim();
+	}
+	
+	@Override
 	public double getTrigger(TTrigger trigger) {
 		
 		switch (trigger) {
 		
 		case LEFT:
-			return getRawAxis(2);
+			return getFilteredRawAxis(2);
 		case RIGHT:
-			return getRawAxis(3);
+			return getFilteredRawAxis(3);
 			
 		default: return 0.0;
 		}
 	}
+	
+	@Override
+	protected boolean isUserButtonActive() {
+		// Logitech controllers use the square, triangle, etc buttons
+		if (   getButton(TButton.A)
+			|| getButton(TButton.B)
+			|| getButton(TButton.X) 
+			|| getButton(TButton.Y)
+			|| getButton(TButton.LEFT_BUMPER)
+			|| getButton(TButton.RIGHT_BUMPER)
+			|| getButton(TButton.START)
+			|| getButton(TButton.BACK)
+			|| getButton(TStick.LEFT)
+			|| getButton(TStick.RIGHT)) {
+			return true;
+		}
+		
+		return false;
+	}
+
+
 }
