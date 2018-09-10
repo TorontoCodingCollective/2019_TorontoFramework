@@ -184,6 +184,30 @@ public abstract class TDriveSubsystem extends TSubsystem {
 	 * can be retrieved from the TalonSRX using the code: 
 	 * <br>
 	 * {@code ((TCanSpeedController) xxxxMotor).getEncoder(); }
+	 * <br>
+	 * In this case, the inversion of the encoder is set to match the motor.
+	 * 
+	 * @param leftEncoder
+	 * @param rightEncoder
+	 */
+	public void setEncoders(TEncoder leftEncoder, TEncoder rightEncoder) {
+		
+		this.leftEncoder = leftEncoder;
+		this.rightEncoder = rightEncoder;
+		
+		if (leftEncoder == null || rightEncoder == null) {
+			disableSpeedPids();
+		}
+	}
+	
+	/**
+	 * Initialize the encoders for this drive subsystem.  This method is used
+	 * when the encoders are attached to a channel that is used by another device
+	 * and must be constructed after this subsystem.  For example, if an
+	 * encoder is attached to a CAN based TalonSRX device, the encoder
+	 * can be retrieved from the TalonSRX using the code: 
+	 * <br>
+	 * {@code ((TCanSpeedController) xxxxMotor).getEncoder(); }
 	 * 
 	 * @param leftEncoder
 	 * @param leftInverted {@code true} if the encoder is inverted, {@code false} otherwise
@@ -205,6 +229,29 @@ public abstract class TDriveSubsystem extends TSubsystem {
 		if (leftEncoder == null || rightEncoder == null) {
 			disableSpeedPids();
 		}
+	}
+	
+	/**
+	 * Initialize the encoders for this drive subsystem.  This method is used
+	 * when the encoders are attached to a channel that is used by another device
+	 * and must be constructed after this subsystem.  For example, if an
+	 * encoder is attached to a CAN based TalonSRX device, the encoder
+	 * can be retrieved from the TalonSRX using the code: 
+	 * <br>
+	 * {@code ((TCanSpeedController) xxxxMotor).getEncoder(); }
+	 * 
+	 * @param leftEncoder
+	 * @param rightEncoder
+	 * @param kP value to initialize the motor speed Pids
+	 * @param maxEncoderSpeed to use to scale the encoder feedback
+	 */
+	public void setEncoders(TEncoder leftEncoder, TEncoder rightEncoder,
+			double kP, double maxEncoderSpeed) {
+		
+		setEncoders(leftEncoder, rightEncoder);
+		
+		setMaxEncoderSpeed(maxEncoderSpeed);
+		setSpeedPidGain(kP);
 	}
 	
 	/**

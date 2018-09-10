@@ -3,7 +3,7 @@ package robot.commands.drive;
 import robot.Robot;
 import robot.RobotConst;
 
-public class DriveDistanceCommand extends DriveDirectionCommand {
+public class DriveDistanceCommand extends DriveOnHeadingCommand {
 	
 	double distance = 0; // in inches 
 	double stopDistanceEncoderCounts = 0; // encoder counts to stop at

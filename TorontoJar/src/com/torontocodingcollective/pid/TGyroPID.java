@@ -13,7 +13,9 @@ import edu.wpi.first.wpilibj.PIDController;
  */
 public class TGyroPID extends PIDController {
 
+	/** Output is the steering value to apply to the motor speed */
 	private double output;
+	private double error;
 	private double totalError;
 	
 	/**
@@ -25,7 +27,7 @@ public class TGyroPID extends PIDController {
 		super(kP, 0.0d, 0.0d, 0.0d, 
 				new NullPIDSource(),
 				new NullPIDOutput()	);
-		this.totalError     = 0;
+		reset();
 	}
 
 	/**
@@ -35,7 +37,7 @@ public class TGyroPID extends PIDController {
 		super(kP, kI, 0.0d, 0.0d, 
 				new NullPIDSource(),
 				new NullPIDOutput()	);
-		this.totalError     = 0;
+		reset();
 	}
 
 	/**
@@ -67,9 +69,9 @@ public class TGyroPID extends PIDController {
 		}
 		
 		// Calculate the error
-		// Normalize the error for the shortest path.  The error
-		// can be between -360 and +360.
-		double error = super.getSetpoint() - normalizedGyroAngle;
+		// Normalize the error for the shortest path.  
+		// The normalized error should be -180 and +180.
+		error = super.getSetpoint() - normalizedGyroAngle;
 		
 		if (error > 180) {
 			error = error - 360.0;
@@ -120,16 +122,31 @@ public class TGyroPID extends PIDController {
 			integralOutput = totalError * kI;
 			
 			totalOutput = proportionalOutput + integralOutput;
+
+			// The output cannot steer more than 1.0
+			if (totalOutput > 1.0) {
+				totalOutput = 1.0;
+			}
+			
+			// The output cannot steer less than -1.0
+			if (totalOutput < -1.0) {
+				totalOutput = -1.0;
+			}
 		}
-		
+
 		output = totalOutput;
-		
 		return output;
 	}
 	
 	@Override
 	public void disable() {
 		super.disable();
+		reset();
+	}
+	
+	@Override
+	public void reset() {
+		error = 0;
 		totalError = 0;
 		output = 0;
 	}
@@ -137,5 +154,10 @@ public class TGyroPID extends PIDController {
 	@Override
 	public double get() { 
 		return output;
+	}
+	
+	@Override
+	public double getError() { 
+		return error;
 	}
 }

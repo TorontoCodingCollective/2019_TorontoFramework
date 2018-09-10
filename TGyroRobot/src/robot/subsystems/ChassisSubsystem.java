@@ -2,15 +2,9 @@ package robot.subsystems;
 
 import com.torontocodingcollective.sensors.encoder.TEncoder;
 import com.torontocodingcollective.sensors.gyro.TNavXGyro;
-import com.torontocodingcollective.sensors.gyro.TSpiGyro;
-import com.torontocodingcollective.sensors.limitSwitch.TLimitSwitch;
-import com.torontocodingcollective.sensors.limitSwitch.TLimitSwitch.DefaultState;
 import com.torontocodingcollective.speedcontroller.TCanSpeedController;
-import com.torontocodingcollective.speedcontroller.TCanSpeedController.TCanSpeedControllerType;
 import com.torontocodingcollective.subsystem.TGryoDriveSubsystem;
 
-import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import robot.RobotConst;
 import robot.RobotMap;
 import robot.commands.drive.DefaultChassisCommand;
@@ -20,44 +14,38 @@ import robot.commands.drive.DefaultChassisCommand;
  */
 public class ChassisSubsystem extends TGryoDriveSubsystem {
 
-	private Solenoid shifter = new Solenoid(RobotMap.SHIFTER_PNEUMATIC_PORT);
-
-	public boolean LOW_GEAR = false;
-	public boolean HIGH_GEAR = true;
-
-	private boolean turboEnabled = false;
-
-	private TLimitSwitch limitSwitch = new TLimitSwitch(1, DefaultState.TRUE);
-	
 	public ChassisSubsystem() {
 
 		// Uncomment this constructor to use PWM based Speed controllers
 		super(	
-				((RobotConst.robot == 1310) ? new TSpiGyro() : new TNavXGyro()),
-				//			new TAnalogGyro(0),
+				// Gyro used for this subsystem
+				new TNavXGyro(),
+				// Left Speed Controller
 				new TCanSpeedController(
-						TCanSpeedControllerType.TALON_SRX, 
-						RobotMap.LEFT_DRIVE_MOTOR_CAN_ADDRESS,
-						TCanSpeedControllerType.VICTOR_SPX,
-						RobotMap.LEFT_DRIVE_FOLLOWER_CAN_ADDRESS,
-						RobotConst.LEFT_MOTOR_ORIENTATION), 
+						RobotMap.LEFT_DRIVE_SPEED_CONTROLLER_TYPE, 
+						RobotMap.LEFT_DRIVE_SPEED_CONTROLLER_CAN_ADDRESS,
+						RobotMap.LEFT_DRIVE_FOLLOWER_SPEED_CONTROLLER_TYPE,
+						RobotMap.LEFT_DRIVE_FOLLOWER_SPEED_CONTROLLER_CAN_ADDRESS,
+						RobotMap.LEFT_DRIVE_MOTOR_ISINVERTED),
+				// Right Speed Controller
 				new TCanSpeedController(
-						TCanSpeedControllerType.TALON_SRX, 
-						RobotMap.RIGHT_DRIVE_MOTOR_CAN_ADDRESS, 
-						TCanSpeedControllerType.VICTOR_SPX,
-						RobotMap.RIGHT_DRIVE_FOLLOWER_CAN_ADDRESS,
-						RobotConst.RIGHT_MOTOR_ORIENTATION),
+						RobotMap.RIGHT_DRIVE_SPEED_CONTROLLER_TYPE, 
+						RobotMap.RIGHT_DRIVE_SPEED_CONTROLLER_CAN_ADDRESS, 
+						RobotMap.RIGHT_DRIVE_FOLLOWER_SPEED_CONTROLLER_TYPE,
+						RobotMap.RIGHT_DRIVE_FOLLOWER_SPEED_CONTROLLER_CAN_ADDRESS,
+						RobotMap.RIGHT_DRIVE_MOTOR_ISINVERTED),
+				// PID Constants
 				RobotConst.DRIVE_GYRO_PID_KP,
 				RobotConst.DRIVE_GYRO_PID_KI,
-				RobotConst.DRIVE_MAX_ROTATION_SPEED);
+				RobotConst.DRIVE_MAX_ROTATION_OUTPUT);
 
 				// Get the encoders attached to the CAN bus speed controller.
 				TEncoder leftEncoder  = ((TCanSpeedController) super.leftMotor) .getEncoder();
 				TEncoder rightEncoder = ((TCanSpeedController) super.rightMotor).getEncoder();
 
 				super.setEncoders(
-						leftEncoder,  RobotConst.LEFT_ENCODER_ORIENTATION,
-						rightEncoder, RobotConst.RIGHT_ENCODER_ORIENTATION,
+						leftEncoder,
+						rightEncoder,
 						RobotConst.DRIVE_SPEED_PID_KP,
 						RobotConst.MAX_LOW_GEAR_SPEED);
 
@@ -65,7 +53,6 @@ public class ChassisSubsystem extends TGryoDriveSubsystem {
 
 	@Override
 	public void init() {
-		disableTurbo();
 	};
 
 	// Initialize the default command for the Chassis subsystem.
@@ -74,45 +61,11 @@ public class ChassisSubsystem extends TGryoDriveSubsystem {
 		setDefaultCommand(new DefaultChassisCommand());
 	}
 
-	// ********************************************************************************************************************
-	// Slew rate on acceleration (takes at least 1 second to stop)
-	// ********************************************************************************************************************
-	@Override
-	public void setSpeed(double leftSpeedSetpoint, double rightSpeedSetpoint) {
-		super.setSpeed(leftSpeedSetpoint, rightSpeedSetpoint);
-	}
-	
-	// ********************************************************************************************************************
-	// Turbo routines
-	// ********************************************************************************************************************
-	public void enableTurbo() {
-		turboEnabled = true;
-		//System.out.println("Turbo enabled");
-		setMaxEncoderSpeed(RobotConst.MAX_HIGH_GEAR_SPEED);
-		shifter.set(HIGH_GEAR);
-	}
-
-	public void disableTurbo() {
-		turboEnabled = false;
-		//System.out.println("Turbo disabled");
-		setMaxEncoderSpeed(RobotConst.MAX_LOW_GEAR_SPEED);
-		shifter.set(LOW_GEAR);
-	}
-
-	public boolean isTurboEnabled() {
-		return turboEnabled;
-	}
-
-	// ********************************************************************************************************************
-	// Update the SmartDashboard
-	// ********************************************************************************************************************
-	// Periodically update the dashboard and any PIDs or sensors
 	@Override
 	public void updatePeriodic() {
 
 		super.updatePeriodic();
 
-		SmartDashboard.putBoolean("Turbo Enabled", isTurboEnabled());
 	}
 
 }

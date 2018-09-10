@@ -1,82 +1,70 @@
 package robot;
 
+import com.torontocodingcollective.speedcontroller.TCanSpeedController.TCanSpeedControllerType;
+
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
  * to a variable name. This provides flexibility changing wiring, makes checking
  * the wiring easier and significantly reduces the number of magic numbers
  * floating around.
+ * <p>
+ * This map is intended to define the wiring only.  Robot constants should
+ * be put in {@link RobotConst}
  */
 public class RobotMap {
 
 
 	//******************************************
-	// Speed Controllers (CAN addresses)
+	// Speed Controllers 
+	// PWM and CAN addresses and Power Ports (PDP)
 	//******************************************
-	public static final int LEFT_DRIVE_MOTOR_CAN_ADDRESS;          // TALON_SRX
-	public static final int LEFT_DRIVE_MOTOR_PDP_PORT      = 1;    // PDP POWER_PORT_ADDRESS - example only
-	public static final int RIGHT_DRIVE_MOTOR_CAN_ADDRESS;         // TALON_SRX
+	public static final int 	LEFT_DRIVE_SPEED_CONTROLLER_CAN_ADDRESS;          
+	public static final TCanSpeedControllerType
+	                        	LEFT_DRIVE_SPEED_CONTROLLER_TYPE;
+	public static final int 	LEFT_DRIVE_FOLLOWER_SPEED_CONTROLLER_CAN_ADDRESS; 
+	public static final TCanSpeedControllerType
+                                LEFT_DRIVE_FOLLOWER_SPEED_CONTROLLER_TYPE;
+	public static final boolean LEFT_DRIVE_MOTOR_ISINVERTED;
+	public static final int     LEFT_DRIVE_MOTOR_POWER_PORT;      
 
-	
-	public static final int LEFT_DRIVE_FOLLOWER_CAN_ADDRESS;       // VICTOR_SPX
-	public static final int RIGHT_DRIVE_FOLLOWER_CAN_ADDRESS;      // VICTOR_SPX
-	
-	public static int ELEVATOR_MOTOR_CAN_ADDRESS           =  4;  // TALON_SRX
-	public static int ELEVATOR_MOTOR_FOLLOWER_CAN_ADDRESS  =  5;  // VICTOR_SPX
-	
-	// Roller: 	to suck in the cube
-	// Lift: 	to lift the cube
-	public static int INTAKE_ROLLER_MOTOR_CAN_ADDRESS      =  6;  // VICTOR_SPX
-	public static int INTAKE_TILT_MOTOR_CAN_ADDRESS        =  7;  // TALON_SRX
-	
-	public static int CLIMB_ARM_MOTOR_CAN_ADDRESS          =  8;  // TALON_SRX
-	public static int CLIMB_WINCH_MOTOR_CAN_ADDRESS        =  9;  // TALON_SRX
-
+	public static final int 	RIGHT_DRIVE_SPEED_CONTROLLER_CAN_ADDRESS;          
+	public static final TCanSpeedControllerType
+	                        	RIGHT_DRIVE_SPEED_CONTROLLER_TYPE;
+	public static final int 	RIGHT_DRIVE_FOLLOWER_SPEED_CONTROLLER_CAN_ADDRESS; 
+	public static final TCanSpeedControllerType
+                            	RIGHT_DRIVE_FOLLOWER_SPEED_CONTROLLER_TYPE;
+	public static final boolean RIGHT_DRIVE_MOTOR_ISINVERTED;
+	public static final int 	RIGHT_DRIVE_MOTOR_POWER_PORT;      
 	
 	//******************************************
 	// DIO Ports
 	//******************************************
-	public static int ELEVATOR_BOTTOM_LIMIT_DIO_PORT    = 0;
-	public static int ELEVATOR_TOP_LIMIT_DIO_PORT       = 1;
-
-	public static int LEFT_CUBE_DETECT_DIO_PORT         = 2;
-	public static int RIGHT_CUBE_DETECT_DIO_PORT        = 3;
 	
 	//******************************************
 	// Pneumatics Ports
 	//******************************************
-	public static int SHIFTER_PNEUMATIC_PORT = 0;
-	public static int INTAKE_CLAW_PNEUMATIC_PORT = 3;
-	public static int INTAKE_CLAW_PNEUMATIC_PORT2 = 4;
-	
-	
+
+	// Initializers if this code will be deployed to more than one
+	// robot with different mappings
 	static {
 		
 		switch (RobotConst.robot) {
 
 		case 1310:
-			LEFT_DRIVE_MOTOR_CAN_ADDRESS          = 0;  // TALON_SRX
-			RIGHT_DRIVE_MOTOR_CAN_ADDRESS         = 1;  // TALON_SRX
-
-			LEFT_DRIVE_FOLLOWER_CAN_ADDRESS       = 2;  // VICTOR_SPX
-			RIGHT_DRIVE_FOLLOWER_CAN_ADDRESS      = 3;  // VICTOR_SPX
-			break;
-
-		case 1311:
-			LEFT_DRIVE_MOTOR_CAN_ADDRESS          = 1;  // TALON_SRX
-			RIGHT_DRIVE_MOTOR_CAN_ADDRESS         = 0;  // TALON_SRX
-
-			LEFT_DRIVE_FOLLOWER_CAN_ADDRESS       = 3;  // VICTOR_SPX
-			RIGHT_DRIVE_FOLLOWER_CAN_ADDRESS      = 2;  // VICTOR_SPX
-			break;
-			
 		default:
-			LEFT_DRIVE_MOTOR_CAN_ADDRESS          = 0;  // TALON_SRX
-			RIGHT_DRIVE_MOTOR_CAN_ADDRESS         = 1;  // TALON_SRX
+			LEFT_DRIVE_SPEED_CONTROLLER_CAN_ADDRESS          = 0;
+			LEFT_DRIVE_SPEED_CONTROLLER_TYPE                 = TCanSpeedControllerType.TALON_SRX;
+			LEFT_DRIVE_FOLLOWER_SPEED_CONTROLLER_CAN_ADDRESS = 2;
+			LEFT_DRIVE_FOLLOWER_SPEED_CONTROLLER_TYPE        = TCanSpeedControllerType.VICTOR_SPX;
+			LEFT_DRIVE_MOTOR_ISINVERTED                      = false;
+			LEFT_DRIVE_MOTOR_POWER_PORT                      = 1;
 
-			LEFT_DRIVE_FOLLOWER_CAN_ADDRESS       = 2;  // VICTOR_SPX
-			RIGHT_DRIVE_FOLLOWER_CAN_ADDRESS      = 3;  // VICTOR_SPX
-			break;
-
+			RIGHT_DRIVE_SPEED_CONTROLLER_CAN_ADDRESS          = 1;
+			RIGHT_DRIVE_SPEED_CONTROLLER_TYPE                 = TCanSpeedControllerType.TALON_SRX;
+			RIGHT_DRIVE_FOLLOWER_SPEED_CONTROLLER_CAN_ADDRESS = 3;
+			RIGHT_DRIVE_FOLLOWER_SPEED_CONTROLLER_TYPE        = TCanSpeedControllerType.VICTOR_SPX;
+			RIGHT_DRIVE_MOTOR_ISINVERTED                      = true;
+			RIGHT_DRIVE_MOTOR_POWER_PORT                      = 2;
 		}
 	}
 }

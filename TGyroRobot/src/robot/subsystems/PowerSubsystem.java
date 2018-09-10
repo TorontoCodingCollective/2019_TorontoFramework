@@ -4,7 +4,6 @@ import com.torontocodingcollective.subsystem.TSubsystem;
 
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import robot.RobotMap;
 
 /**
  * Power Subsystem
@@ -15,7 +14,6 @@ import robot.RobotMap;
 public class PowerSubsystem extends TSubsystem {
 	
 	PowerDistributionPanel pdp = new PowerDistributionPanel();
-	
 	
 	public double getMotorCurrent(int port) {
 		return pdp.getCurrent(port);
@@ -29,7 +27,7 @@ public class PowerSubsystem extends TSubsystem {
 	// Periodically update the dashboard and any PIDs or sensors
 	@Override
 	public void updatePeriodic() {
-		SmartDashboard.putNumber("Left Drive Motor Current", getMotorCurrent(RobotMap.LEFT_DRIVE_MOTOR_PDP_PORT));
+		SmartDashboard.putData("PDP", pdp);
 	}
 
 

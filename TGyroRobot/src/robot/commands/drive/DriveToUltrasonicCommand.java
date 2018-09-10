@@ -8,7 +8,7 @@ import robot.RobotConst.Direction;
 /**
  *
  */
-public class DriveToUltrasonicCommand extends DriveDirectionCommand {
+public class DriveToUltrasonicCommand extends DriveOnHeadingCommand {
 
 	private static final double STOPPING_DISTANCE = 1.0; // Stopping distance in inches
 

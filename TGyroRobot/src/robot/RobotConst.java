@@ -16,12 +16,6 @@ public class RobotConst {
 	//*********************************************************
 	// Drive Constants
 	//*********************************************************
-	public static final boolean RIGHT_MOTOR_ORIENTATION;
-	public static final boolean LEFT_MOTOR_ORIENTATION;
-	
-	public static final boolean RIGHT_ENCODER_ORIENTATION;
-	public static final boolean LEFT_ENCODER_ORIENTATION;
-	
 	// Forward for the elevator is counter-clockwise when looking 
 	// from the back of the robot towards the front
 	public static final boolean ELEVATOR_MOTOR_ORIENTATION;
@@ -34,7 +28,7 @@ public class RobotConst {
 	
 	public static final double DRIVE_GYRO_PID_KP;
 	public static final double DRIVE_GYRO_PID_KI;
-	public static final double DRIVE_MAX_ROTATION_SPEED = 0.6;
+	public static final double DRIVE_MAX_ROTATION_OUTPUT = 0.6;
 	
 	public static final double DRIVE_SPEED_PID_KP;
 	public static final double ENCODER_COUNTS_PER_INCH;
@@ -60,12 +54,6 @@ public class RobotConst {
 
 		case 1311:
 		case 1310:
-			RIGHT_MOTOR_ORIENTATION = INVERTED;
-			LEFT_MOTOR_ORIENTATION = NOT_INVERTED;
-			
-			RIGHT_ENCODER_ORIENTATION = NOT_INVERTED;
-			LEFT_ENCODER_ORIENTATION = INVERTED;
-			
 			MAX_LOW_GEAR_SPEED = 580.0;    // Encoder counts/sec
 			MAX_HIGH_GEAR_SPEED = 2000.0;
 			
@@ -84,12 +72,6 @@ public class RobotConst {
 			
 		case 1321:
 		default:
-			RIGHT_MOTOR_ORIENTATION = NOT_INVERTED;
-			LEFT_MOTOR_ORIENTATION = INVERTED;
-			
-			RIGHT_ENCODER_ORIENTATION = NOT_INVERTED;
-			LEFT_ENCODER_ORIENTATION = INVERTED;
-			
 			MAX_LOW_GEAR_SPEED = 365.0;    // Encoder counts/sec
 			MAX_HIGH_GEAR_SPEED = 830.0;
 			

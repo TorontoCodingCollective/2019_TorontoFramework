@@ -10,8 +10,8 @@ public class TSpiGyro extends TGyro {
 		this(false);
 	}
 	
-	public TSpiGyro(boolean inverted) {
-		super(inverted);
+	public TSpiGyro(boolean isInverted) {
+		super(isInverted);
 		this.spiGyro = new ADXRS450_Gyro();
 	}
 	

@@ -57,7 +57,7 @@ public abstract class TSpeedController implements SpeedController {
 	 * Get the encoder attached to this TSpeedController
 	 * <p>
 	 * By default, the encoder will be set with the same inversion setting as the motor
-	 * and is assumed to be a 2channel quadrature encoder.
+	 * and is assumed to be a 2-channel quadrature encoder.
 	 * @returns TEncoder attached to this device or {@code null} if this device does
 	 * not support an attached encoder
 	 */
