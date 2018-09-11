@@ -12,7 +12,7 @@ import com.torontocodingcollective.subsystem.TGryoDriveSubsystem;
  * This command will end when the angle is reached and the rotational
  * speed is below the threshold
  */
-public class RotateToHeadingCommand extends TSafeCommand {
+public class TRotateToHeadingCommand extends TSafeCommand {
 
 	public static final double DEFAULT_TIMEOUT = 15.0;
 
@@ -32,7 +32,7 @@ public class RotateToHeadingCommand extends TSafeCommand {
 	 * @param oi that extend the TOi operator input class
 	 * @param driveSubsystem that extends the TGyroDriveSubsystem
 	 */
-	public RotateToHeadingCommand(double heading, 
+	public TRotateToHeadingCommand(double heading, 
 			TOi oi, TGryoDriveSubsystem driveSubsystem) {
 
 		this(heading, -1, DEFAULT_TIMEOUT, oi, driveSubsystem);
@@ -52,7 +52,7 @@ public class RotateToHeadingCommand extends TSafeCommand {
 	 * @param oi that extend the TOi operator input class
 	 * @param driveSubsystem that extends the TGyroDriveSubsystem
 	 */
-	public RotateToHeadingCommand(double heading, double maxRotationOutput, 
+	public TRotateToHeadingCommand(double heading, double maxRotationOutput, 
 			double timeout,	TOi oi, TGryoDriveSubsystem driveSubsystem) {
 		
 		super(timeout, oi);
