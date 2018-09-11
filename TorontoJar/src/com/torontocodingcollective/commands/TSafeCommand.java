@@ -1,18 +1,22 @@
-package robot.commands.drive;
+package com.torontocodingcollective.commands;
+
+import com.torontocodingcollective.oi.TOi;
 
 import edu.wpi.first.wpilibj.command.Command;
-import robot.Robot;
 
 public class TSafeCommand extends Command {
 
 	private final double maxTimeSec;
+	private final TOi    oi;
 	
-	public TSafeCommand() {
+	public TSafeCommand(TOi oi) {
 		this.maxTimeSec = 0;
+		this.oi = oi;
 	}
 	
-	public TSafeCommand(double maxTimeSec) {
+	public TSafeCommand(double maxTimeSec, TOi oi) {
 		this.maxTimeSec = maxTimeSec;
+		this.oi = oi;
 	}
 	
     protected boolean isFinished() {
@@ -23,7 +27,7 @@ public class TSafeCommand extends Command {
     }
 
     public boolean isCancelled() {
-    	if (Robot.oi.getCancelCommand()) {
+    	if (oi.getCancelCommand()) {
     		return true;
     	}
     	return false;
