@@ -158,6 +158,35 @@ public abstract class TGryoDriveSubsystem extends TDriveSubsystem {
 	}
 
 	/**
+	 * Get the heading error from the setpoint heading
+	 * <p>
+	 * NOTE: This routine will return zero if the gyro
+	 * PID is not enabled.
+	 * <p>
+	 * The GyroPID is enabled using the {@link #rotateToHeading}
+	 * routines.
+	 * @return error in degrees.
+	 */
+	public double getGyroHeadingError() {
+
+		if (!gyroPid.isEnabled()) {
+			return 0;
+		}
+		return gyroPid.getError();
+	}
+
+	/** 
+	 * Get Gyro Rate
+	 * <p>
+	 * Returns the rate of rotation of the gyro in degrees 
+	 * per second
+	 * @return rate in degress/second
+	 */
+	public double getGyroRate() {
+		return gyro.getRate();
+	}
+
+	/**
 	 * Set the current gyro heading to zero.
 	 */
 	public void resetGyroAngle() {
@@ -272,7 +301,7 @@ public abstract class TGryoDriveSubsystem extends TDriveSubsystem {
     	
     	return steering;
 	}
-
+	
 	/**
 	 * Reset the gyro angle to a known heading angle.
 	 * <p>

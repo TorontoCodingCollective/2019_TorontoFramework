@@ -77,12 +77,12 @@ public class TDriveOnHeadingCommand extends TSafeCommand {
     	this.brakeWhenFinished = brakeWhenFinished;
     }
 
-    // Called just before this Command runs the first time
+    @Override
     protected void initialize() {
     	driveSubsystem.driveOnHeading(speed, heading);
     }
 
-    // Called repeatedly when this Command is scheduled to run
+    @Override
     protected void execute() {
     	
     	// If there is an error, then do nothing
@@ -109,13 +109,14 @@ public class TDriveOnHeadingCommand extends TSafeCommand {
     	this.speed = speed;
     }
 
-    // Make this return true when this Command no longer needs to run execute()
+    @Override
     protected boolean isFinished() {
     	
     	if (error) {
     		return true;
     	}
     	
+    	// Check for a timeout or cancel
     	if (super.isFinished()) {
     		return true;
     	}
@@ -123,7 +124,7 @@ public class TDriveOnHeadingCommand extends TSafeCommand {
     	return false;
     }
 
-    // Called once after isFinished returns true
+    @Override
     protected void end() {
     	if (brakeWhenFinished) {
     		driveSubsystem.setSpeed(0, 0);
