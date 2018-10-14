@@ -89,7 +89,7 @@ public class AutonomousCommand extends CommandGroup {
 
 		this.addSequential(
 				// 36 in, 90 deg, .5 speed, 5 sec, Brake
-				new TDriveOnHeadingDistanceCommand(270, 90, .5, 5, TConst.BRAKE_WHEN_FINISHED,
+				new TDriveOnHeadingDistanceCommand(36, 270, .5, 5, TConst.BRAKE_WHEN_FINISHED,
 						Robot.oi, Robot.driveSubsystem));
 
 		this.addSequential(
