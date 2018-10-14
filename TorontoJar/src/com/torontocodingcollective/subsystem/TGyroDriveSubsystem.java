@@ -7,7 +7,7 @@ import com.torontocodingcollective.speedcontroller.TSpeedController;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public abstract class TGryoDriveSubsystem extends TDriveSubsystem {
+public abstract class TGyroDriveSubsystem extends TDriveSubsystem {
 
 	private enum Mode { DRIVE_ON_HEADING, ROTATE_TO_HEADING };
 
@@ -26,9 +26,9 @@ public abstract class TGryoDriveSubsystem extends TDriveSubsystem {
 	 * The GyroPID is initialized to disabled.  Use the {@link #enableGyroPid()} 
 	 * and {@link #disableGyroPid()} to enable and disable the angle PID.
 	 * <p>
-	 * @param gyro that extends {@link TGyro}
 	 * @param leftMotor that extends the {@link TSpeedController}
 	 * @param rightMotor that extends {@link TSpeedController}
+	 * @param gyro that extends {@link TGyro}
 	 * @param gyroKP Default Proportional gain for the gyro angle pid.  The 
 	 * gyro PID is displayed on the SmartDashboard and can be 
 	 * adjusted through that interface
@@ -38,10 +38,10 @@ public abstract class TGryoDriveSubsystem extends TDriveSubsystem {
 	 * @param maxRotationOutput used to control the rotation of the robot
 	 * when rotating to an angle
 	 */
-	public TGryoDriveSubsystem(
-			TGyro gyro,
+	public TGyroDriveSubsystem(
 			TSpeedController leftMotor, 
 			TSpeedController rightMotor, 
+			TGyro gyro,
 			double gyroKP, double gyroKI,
 			double maxRotationOutput
 			) {
@@ -65,16 +65,17 @@ public abstract class TGryoDriveSubsystem extends TDriveSubsystem {
 	 * disabled.  Use the {@link #enableSpeedPids()} and {@link #disableSpeedPids()}
 	 * routines to set the PIDs on and off
 	 * 
-	 * @param gyro that extends {@link TGyro}
 	 * @param leftMotor that extends the {@link TSpeedController}
 	 * @param rightMotor that extends {@link TSpeedController}
 	 * @param leftEncoder encoder for the left motor
 	 * @param rightEncoder encoder for the right motor
+	 * @param encoderCountsPerInch
 	 * @param speedKP Default Proportional gain for the motor speed pid.  The 
 	 * speed PIDs are displayed on the SmartDashboard and can be 
 	 * adjusted through that interface
 	 * @param maxEncoderSpeed the max loaded robot encoder rate used
 	 * to normalize the PID input encoder feedback.
+	 * @param gyro that extends {@link TGyro}
 	 * @param gyroKP Default Proportional gain for the gyro angle pid.  The 
 	 * gyro PID is displayed on the SmartDashboard and can be 
 	 * adjusted through that interface
@@ -84,13 +85,14 @@ public abstract class TGryoDriveSubsystem extends TDriveSubsystem {
 	 * @param maxRotationOutput used to control the rotation of the robot
 	 * when rotating to an angle
 	 */
-	public TGryoDriveSubsystem(
-			TGyro gyro,
+	public TGyroDriveSubsystem(
 			TSpeedController leftMotor, 
 			TSpeedController rightMotor, 
 			TEncoder leftEncoder,   
-			TEncoder rightEncoder,	   
+			TEncoder rightEncoder,
+			double encoderCountsPerInch,
 			double speedKP, double maxEncoderSpeed,
+			TGyro gyro,
 			double gyroKP, double gyroKI,
 			double maxRotationOutput
 			) {
@@ -100,6 +102,7 @@ public abstract class TGryoDriveSubsystem extends TDriveSubsystem {
 				rightMotor, 
 				leftEncoder, 
 				rightEncoder, 
+				encoderCountsPerInch,
 				speedKP, maxEncoderSpeed);
 		
 		this.gyro = gyro;
@@ -141,6 +144,8 @@ public abstract class TGryoDriveSubsystem extends TDriveSubsystem {
 		
 		this.mode = Mode.DRIVE_ON_HEADING;
 
+		this.speedSetpoint = speedSetpoint;
+		
 		gyroPid.enable();
 		gyroPid.setSetpoint(heading);
 	}

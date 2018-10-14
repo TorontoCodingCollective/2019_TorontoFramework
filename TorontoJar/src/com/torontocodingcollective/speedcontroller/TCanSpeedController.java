@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.torontocodingcollective.TConst;
 import com.torontocodingcollective.sensors.encoder.TCanEncoder;
 import com.torontocodingcollective.sensors.encoder.TEncoder;
 
@@ -48,7 +49,7 @@ public class TCanSpeedController extends TSpeedController {
 	 */
 	public TCanSpeedController(TCanSpeedControllerType controllerType, int canAddress, 
 			int... canFollowerAddresses) {
-		this(controllerType, canAddress, false, canFollowerAddresses);
+		this(controllerType, canAddress, TConst.NOT_INVERTED, canFollowerAddresses);
 	}
 	
 	/**
@@ -67,7 +68,7 @@ public class TCanSpeedController extends TSpeedController {
 	 * @param controllerType a valid {@link TCanSpeedControllerType}
 	 * @param canAddress on the CAN bus, set using the CAN bus configuration tools
 	 * @param isInverted {@code true} if the motors are inverted, {@code false} otherwise
-	 * @param canFollowerAddresses optional list of follower CAN addresses
+	 * @param followerCanAddresses optional list of follower CAN addresses
 	 */
 	public TCanSpeedController(TCanSpeedControllerType controllerType, int canAddress, 
 			boolean isInverted, int... followerCanAddresses) {
@@ -100,7 +101,8 @@ public class TCanSpeedController extends TSpeedController {
 	 */
 	public TCanSpeedController(TCanSpeedControllerType controllerType, int canAddress, 
 			TCanSpeedControllerType followerControllerType, int followerCanAddress) {
-		this(controllerType, canAddress, followerControllerType, followerCanAddress, false);
+		this(controllerType, canAddress, followerControllerType, followerCanAddress, 
+				TConst.NOT_INVERTED);
 	}
 	
 	/**
@@ -118,12 +120,13 @@ public class TCanSpeedController extends TSpeedController {
 	 * 
 	 * @param controllerType a valid {@link TCanSpeedControllerType}
 	 * @param canAddress on the CAN bus, set using the CAN bus configuration tools
-	 * @param isInverted {@code true} if the motors are inverted, {@code false} otherwise
 	 * @param followerControllerType a valid {@link TCanSpeedControllerType}
 	 * @param followerCanAddress address on the CAN bus
+	 * @param isInverted {@code true} if the motors are inverted, {@code false} otherwise
 	 */
 	public TCanSpeedController(TCanSpeedControllerType controllerType, int canAddress, 
-			TCanSpeedControllerType followerControllerType, int followerCanAddress, boolean isInverted) {
+			TCanSpeedControllerType followerControllerType, int followerCanAddress, 
+			boolean isInverted) {
 
 		super(isInverted);
 		

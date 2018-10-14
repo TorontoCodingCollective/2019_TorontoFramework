@@ -10,7 +10,9 @@ import edu.wpi.first.wpilibj.CameraServer;
 public class CameraSubsystem extends TSubsystem {
 
 	public CameraSubsystem() {
-		CameraServer.getInstance().startAutomaticCapture();
+		
+		// Uncomment this line to start a USB camera feed
+		// CameraServer.getInstance().startAutomaticCapture();
 	}
 	
 	@Override

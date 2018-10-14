@@ -1,5 +1,6 @@
 package com.torontocodingcollective.subsystem;
 
+import com.torontocodingcollective.TConst;
 import com.torontocodingcollective.pid.TSpeedPID;
 import com.torontocodingcollective.sensors.encoder.TEncoder;
 import com.torontocodingcollective.speedcontroller.TSpeedController;
@@ -25,6 +26,7 @@ public abstract class TDriveSubsystem extends TSubsystem {
 	private final TSpeedPID rightSpeedPid; 
 	
 	private double maxEncoderSpeed = 1.0;
+	private double encoderCountsPerInch = 0;
 	
 	boolean speedPidsEnabled = false;
 
@@ -42,7 +44,7 @@ public abstract class TDriveSubsystem extends TSubsystem {
 			TSpeedController leftMotor,
 			TSpeedController rightMotor) {
 		
-		this(leftMotor, rightMotor, null, null, 0, 0);
+		this(leftMotor, rightMotor, null, null, 0, 0, 0);
 	}
 
 	/**
@@ -56,6 +58,7 @@ public abstract class TDriveSubsystem extends TSubsystem {
 	 * @param rightMotor that implements the TSpeedController interface
 	 * @param leftEncoder encoder for the left motor
 	 * @param rightEncoder encoder for the right motor
+	 * @param encoderCountsPerInch
 	 * @param kP Default Proportional gain for the motor speed pid.  The 
 	 * speed PIDs are displayed on the SmartDashboard and can be 
 	 * adjusted through that interface
@@ -67,6 +70,7 @@ public abstract class TDriveSubsystem extends TSubsystem {
 			TSpeedController rightMotor,
 			TEncoder         leftEncoder,
 			TEncoder         rightEncoder,
+			double       	 encoderCountsPerInch,
 			double           kP,
 			double           maxEncoderSpeed) {
 		
@@ -74,6 +78,8 @@ public abstract class TDriveSubsystem extends TSubsystem {
 		this.rightMotor = rightMotor;
 		this.leftEncoder = leftEncoder;
 		this.rightEncoder = rightEncoder;
+		
+		this.encoderCountsPerInch = encoderCountsPerInch;
 		
 		leftSpeedPid  = new TSpeedPID(kP);
 		rightSpeedPid = new TSpeedPID(kP);
@@ -133,6 +139,23 @@ public abstract class TDriveSubsystem extends TSubsystem {
 	}
 	
 	/**
+	 * Get the distance in inches
+	 * <p>
+	 * The drive subsystem must have encoders and must have an 
+	 * non-zero encoder counts per inch {@see #setEncoderCountsPerInch(double)}
+	 * in order to return the distance in inches
+	 * @return double containing the encoder distance in inches or the raw 
+	 * encoder counts if the encoder counts per inch are not set.
+	 */
+	public double getDistanceInches() {
+		
+		if (encoderCountsPerInch == 0) {
+			return getEncoderDistance();
+		}
+		return getEncoderDistance() / encoderCountsPerInch;
+	}
+	
+	/**
 	 * Get the raw distance covered since the last encoder reset
 	 * <p>
 	 * The distance returned is the average distance of the left
@@ -177,6 +200,15 @@ public abstract class TDriveSubsystem extends TSubsystem {
 	}
 	
 	/**
+	 * Set the encoder counts per inch
+	 * @param encoderCountsPerInch if this value is set to 0, then the
+	 * raw encoder counts will be returned on the call to {@link #getDistanceInches()} 
+	 */
+	public void setEncoderCountsPerInch(double encoderCountsPerInch) {
+		this.encoderCountsPerInch = encoderCountsPerInch;
+	}
+	
+	/**
 	 * Initialize the encoders for this drive subsystem.  This method is used
 	 * when the encoders are attached to a channel that is used by another device
 	 * and must be constructed after this subsystem.  For example, if an
@@ -184,20 +216,31 @@ public abstract class TDriveSubsystem extends TSubsystem {
 	 * can be retrieved from the TalonSRX using the code: 
 	 * <br>
 	 * {@code ((TCanSpeedController) xxxxMotor).getEncoder(); }
-	 * <br>
-	 * In this case, the inversion of the encoder is set to match the motor.
 	 * 
 	 * @param leftEncoder
+	 * @param leftIsInverted {@code true} if the encoder is inverted, {@code false} otherwise
 	 * @param rightEncoder
+	 * @param rightIsInverted {@code true} if the encoder is inverted, {@code false} otherwise
+	 * @param encoderCountsPerInch
 	 */
-	public void setEncoders(TEncoder leftEncoder, TEncoder rightEncoder) {
+	public void setEncoders(TEncoder leftEncoder, boolean leftIsInverted, 
+			TEncoder rightEncoder, boolean rightIsInverted, double encoderCountsPerInch) {
 		
 		this.leftEncoder = leftEncoder;
 		this.rightEncoder = rightEncoder;
 		
+		if (leftEncoder != null) {
+			this.leftEncoder.setInverted(leftIsInverted);
+		}
+		if (rightEncoder != null) {
+			this.rightEncoder.setInverted(rightIsInverted);
+		}
+		
 		if (leftEncoder == null || rightEncoder == null) {
 			disableSpeedPids();
 		}
+		
+		setEncoderCountsPerInch(encoderCountsPerInch);
 	}
 	
 	/**
@@ -213,24 +256,40 @@ public abstract class TDriveSubsystem extends TSubsystem {
 	 * @param leftInverted {@code true} if the encoder is inverted, {@code false} otherwise
 	 * @param rightEncoder
 	 * @param rightInverted {@code true} if the encoder is inverted, {@code false} otherwise
+	 * @param encoderCountsPerInch
+	 * @param kP value to initialize the motor speed Pids
+	 * @param maxEncoderSpeed to use to scale the encoder feedback
 	 */
-	public void setEncoders(TEncoder leftEncoder, boolean leftInverted, TEncoder rightEncoder, boolean rightInverted) {
+	public void setEncoders(TEncoder leftEncoder, boolean leftInverted, 
+			TEncoder rightEncoder, boolean rightInverted,
+			double encoderCountsPerInch, double kP, double maxEncoderSpeed) {
 		
-		this.leftEncoder = leftEncoder;
-		this.rightEncoder = rightEncoder;
+		setEncoders(leftEncoder, leftInverted, rightEncoder, rightInverted, encoderCountsPerInch);
 		
-		if (leftEncoder != null) {
-			this.leftEncoder.setInverted(leftInverted);
-		}
-		if (rightEncoder != null) {
-			this.rightEncoder.setInverted(rightInverted);
-		}
-		
-		if (leftEncoder == null || rightEncoder == null) {
-			disableSpeedPids();
-		}
+		setMaxEncoderSpeed(maxEncoderSpeed);
+		setSpeedPidGain(kP);
 	}
 	
+	/**
+	 * Initialize the encoders for this drive subsystem.  This method is used
+	 * when the encoders are attached to a channel that is used by another device
+	 * and must be constructed after this subsystem.  For example, if an
+	 * encoder is attached to a CAN based TalonSRX device, the encoder
+	 * can be retrieved from the TalonSRX using the code: 
+	 * <br>
+	 * {@code ((TCanSpeedController) xxxxMotor).getEncoder(); }
+	 * <br>
+	 * In this case, the inversion of the encoder is set to match the motor.
+	 * 
+	 * @param leftEncoder
+	 * @param rightEncoder
+	 */
+	public void setEncoders(TEncoder leftEncoder, TEncoder rightEncoder, 
+			double encoderCountsPerInch) {
+		setEncoders(leftEncoder, TConst.NOT_INVERTED, rightEncoder, TConst.NOT_INVERTED,
+				encoderCountsPerInch);
+	}
+
 	/**
 	 * Initialize the encoders for this drive subsystem.  This method is used
 	 * when the encoders are attached to a channel that is used by another device
@@ -246,34 +305,10 @@ public abstract class TDriveSubsystem extends TSubsystem {
 	 * @param maxEncoderSpeed to use to scale the encoder feedback
 	 */
 	public void setEncoders(TEncoder leftEncoder, TEncoder rightEncoder,
+			double encoderCountsPerInch,
 			double kP, double maxEncoderSpeed) {
 		
-		setEncoders(leftEncoder, rightEncoder);
-		
-		setMaxEncoderSpeed(maxEncoderSpeed);
-		setSpeedPidGain(kP);
-	}
-	
-	/**
-	 * Initialize the encoders for this drive subsystem.  This method is used
-	 * when the encoders are attached to a channel that is used by another device
-	 * and must be constructed after this subsystem.  For example, if an
-	 * encoder is attached to a CAN based TalonSRX device, the encoder
-	 * can be retrieved from the TalonSRX using the code: 
-	 * <br>
-	 * {@code ((TCanSpeedController) xxxxMotor).getEncoder(); }
-	 * 
-	 * @param leftEncoder
-	 * @param leftInverted {@code true} if the encoder is inverted, {@code false} otherwise
-	 * @param rightEncoder
-	 * @param rightInverted {@code true} if the encoder is inverted, {@code false} otherwise
-	 * @param kP value to initialize the motor speed Pids
-	 * @param maxEncoderSpeed to use to scale the encoder feedback
-	 */
-	public void setEncoders(TEncoder leftEncoder, boolean leftInverted, TEncoder rightEncoder, boolean rightInverted,
-			double kP, double maxEncoderSpeed) {
-		
-		setEncoders(leftEncoder, leftInverted, rightEncoder, rightInverted);
+		setEncoders(leftEncoder, rightEncoder, encoderCountsPerInch);
 		
 		setMaxEncoderSpeed(maxEncoderSpeed);
 		setSpeedPidGain(kP);
@@ -373,11 +408,12 @@ public abstract class TDriveSubsystem extends TSubsystem {
 			}
 
 			// Update all SmartDashboard values
-			SmartDashboard.putNumber("Left Distance", leftEncoder.get());
+			SmartDashboard.putNumber("Left Encoder", leftEncoder.get());
 			SmartDashboard.putNumber("Left Speed", leftEncoder.getRate());
-			SmartDashboard.putNumber("Right Distance", rightEncoder.get());
+			SmartDashboard.putNumber("Right Encoder", rightEncoder.get());
 			SmartDashboard.putNumber("Right Speed", rightEncoder.getRate());
-			SmartDashboard.putNumber("Avg Distance", getEncoderDistance());
+			SmartDashboard.putNumber("Encoder Distance", getEncoderDistance());
+			SmartDashboard.putNumber("Distance Inches", getDistanceInches());
 			SmartDashboard.putNumber("Avg Speed", getEncoderSpeed());
 		
 			SmartDashboard.putBoolean("Speed PIDs Active", speedPidsEnabled);

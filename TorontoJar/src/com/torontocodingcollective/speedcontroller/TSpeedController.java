@@ -1,5 +1,6 @@
 package com.torontocodingcollective.speedcontroller;
 
+import com.torontocodingcollective.TConst;
 import com.torontocodingcollective.pid.TSpeedPID;
 import com.torontocodingcollective.sensors.encoder.TEncoder;
 
@@ -13,7 +14,7 @@ import edu.wpi.first.wpilibj.SpeedController;
  */
 public abstract class TSpeedController implements SpeedController {
 
-	private boolean isInverted = false;
+	private boolean isInverted = TConst.NOT_INVERTED;
 	
 	protected TSpeedController(boolean isInverted) {
 		this.isInverted = isInverted;

@@ -1,5 +1,6 @@
 package com.torontocodingcollective.commands;
 
+import com.torontocodingcollective.TConst;
 import com.torontocodingcollective.oi.TOi;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -9,43 +10,47 @@ import edu.wpi.first.wpilibj.command.Command;
  * <p>
  * This command is used as a base command for all
  * other commands and supports the features:
- * <br> - end the command after a given timeout
- * <br> - end the command when cancelled by the user
+ * <ls>
+ * <li>end the command after a given timeout
+ * <li>end the command when cancelled by the user
+ * </ls>
  */
 public class TSafeCommand extends Command {
 
-	private final double maxTimeSec;
 	private final TOi    oi;
 	
 	/**
 	 * TSafeCommand
 	 * <p>
-	 * Construct a safe command with unlimited timeout
+	 * Construct a safe command with the default timeout
+	 * {@link TConst#DEFAULT_COMMAND_TIMEOUT }
 	 * @param oi the TOi object that defines the 
 	 * cancel operation {@link TOi#getCancelCommand()}
 	 */
 	public TSafeCommand(TOi oi) {
-		this(-1, oi);
+		this(TConst.DEFAULT_COMMAND_TIMEOUT, oi);
 	}
 	
 	/**
 	 * TSafeCommand
 	 * <p>
 	 * Construct a safe command with unlimited timeout
-	 * @param maxTimeSec the time after which this command
-	 * will end automatically a value <= 0 will
-	 * be used as an infinite timeout
+	 * @param timeout the time after which this command
+	 * will end automatically a value of {@link TConst#NO_COMMAND_TIMEOUT}
+	 * will be used as an infinite timeout. 
 	 * @param oi the TOi object that defines the 
 	 * cancel operation {@link TOi#getCancelCommand()}
 	 */
-	public TSafeCommand(double maxTimeSec, TOi oi) {
-		this.maxTimeSec = maxTimeSec;
+	public TSafeCommand(double timeout, TOi oi) {
+		if (timeout >= 0) {
+			super.setTimeout(timeout);
+		}
 		this.oi = oi;
 	}
 	
 	@Override
     protected boolean isFinished() {
-    	if (isCancelled() || isTimedOut()) {
+    	if (isCancelled() || super.isTimedOut()) {
     		return true;
     	}
         return false;
@@ -61,16 +66,6 @@ public class TSafeCommand extends Command {
 	 */
     public boolean isCancelled() {
     	if (oi.getCancelCommand()) {
-    		return true;
-    	}
-    	return false;
-    }
-    
-    @Override
-    public boolean isTimedOut() {
-    	// max time of zero is an infinite timeout
-    	if (   maxTimeSec > 0
-    		&& timeSinceInitialized() >= maxTimeSec) {
     		return true;
     	}
     	return false;

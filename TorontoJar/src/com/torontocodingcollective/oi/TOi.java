@@ -1,5 +1,8 @@
 package com.torontocodingcollective.oi;
 
+import com.torontocodingcollective.commands.TDriveSelector;
+import com.torontocodingcollective.commands.TDriveControlType;
+
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
@@ -27,6 +30,8 @@ package com.torontocodingcollective.oi;
  * 
  */
 public abstract class TOi {
+	
+	private TDriveSelector driveSelector = new TDriveSelector();
 
 	/** 
 	 * Return the state of the cancel command button.
@@ -37,4 +42,72 @@ public abstract class TOi {
 	 * is currently pressed {@code false} otherwise
 	 */
 	public abstract boolean getCancelCommand();
+
+	/**
+	 * Get the stick position for the specified stick
+	 * @param stick the {@link TStick#LEFT} or {@link TStick#RIGHT} stick
+	 * for the driver
+	 * @return {@link TStickPosition} for the left drive 
+	 * stick or {@code null} if only the right stick is used
+	 * for driving
+	 */
+	public abstract TStickPosition getDriveStickPosition(TStick stick);
+	
+	/** 
+	 * Return the state of the reset button.
+	 * <p>
+	 * Typically this is the Start button on the 
+	 * Driver controller
+	 * @return {@code true} if the Reset button 
+	 * is currently pressed {@code false} otherwise
+	 */
+	public abstract boolean getReset();
+	
+	/**
+	 * Return the heading to rotate to from the 
+	 * Driver controller
+	 * <p>
+	 * Robots that use a gyro should override this
+	 * method in order to test the gyro PID 
+	 * @return an angle between {@code 0} and 
+	 * {@code 360} degrees
+	 */
+	public int getRotateToHeading() {
+		return -1;
+	}
+	
+	/**
+	 * Get the selected drive type
+	 * @return {@link TDriveControlType} selected on the 
+	 * SmartDashboard.  The default drive type is 
+	 * {@link TDriveControlType#ARCADE}
+	 */
+	public TDriveControlType getSelectedDriveType() {
+		return driveSelector.getDriveControlType();
+	}
+	
+	/**
+	 * Get the selected single stick side
+	 * @return {@link TStick} selected on the 
+	 * SmartDashboard.  The default single stick
+	 * drive is {@link TStick#RIGHT}
+	 */
+	public TStick getSelectedSingleStickSide() {
+		return driveSelector.getSingleStickSide();
+	}
+	
+	/** 
+	 * Get Speed PID Enabled
+	 * @return {@code true} if the Speed PIDs are enabled,
+	 * {@code false} otherwise
+	 */
+	public abstract boolean getSpeedPidEnabled();
+	
+	/**
+	 * Update the elements of the OI that need updating
+	 * and put data to the SmartDashboard
+	 */
+	public void updatePeriodic() {
+		driveSelector.updatePeriodic();
+	}
 }

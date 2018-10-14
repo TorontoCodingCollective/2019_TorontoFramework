@@ -12,7 +12,7 @@ public abstract class TSubsystem extends Subsystem {
 	/**
 	 * Initialize the subsystem
 	 */
-	protected abstract void init();
+	public abstract void init();
 	
 	/**
 	 * Update Periodic 
@@ -20,6 +20,6 @@ public abstract class TSubsystem extends Subsystem {
 	 * This routine should be used for updating elements (like PIDs) that
 	 * need to run on every control loop, and to update the SmartDashboard values.
 	 */
-	protected abstract void updatePeriodic();
+	public abstract void updatePeriodic();
 	
 }

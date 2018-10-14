@@ -1,7 +1,9 @@
-package com.torontocodingcollective.commands;
+package com.torontocodingcollective.commands.gyroDrive;
 
+import com.torontocodingcollective.TConst;
+import com.torontocodingcollective.commands.TSafeCommand;
 import com.torontocodingcollective.oi.TOi;
-import com.torontocodingcollective.subsystem.TGryoDriveSubsystem;
+import com.torontocodingcollective.subsystem.TGyroDriveSubsystem;
 
 /**
  * Drive On Heading Command
@@ -19,7 +21,7 @@ public class TDriveOnHeadingCommand extends TSafeCommand {
 	private final boolean brakeWhenFinished;
 	private boolean error = false;
 	
-	private final TGryoDriveSubsystem driveSubsystem;
+	private final TGyroDriveSubsystem driveSubsystem;
 	
 	/**
 	 * Construct a new DriveOnHeadingCommand
@@ -29,14 +31,15 @@ public class TDriveOnHeadingCommand extends TSafeCommand {
 	 * @param speed at which to drive in the range 0 <= speed <= 1.0.
 	 * if the speed is set to a very small value, the robot will not
 	 * drive and the command will end on the timeout.
-	 * @param timeout in seconds after which this command will
-	 * end
+	 * @param timeout the time after which this command
+	 * will end automatically a value of {@link TConst#NO_COMMAND_TIMEOUT}
+	 * will be used as an infinite timeout. 
 	 * @param oi that extend the TOi operator input class
 	 * @param driveSubsystem that extends the TGyroDriveSubsystem
 	 */
     public TDriveOnHeadingCommand(double heading, double speed, 
-    		double timeout, TOi oi, TGryoDriveSubsystem driveSubsystem) {
-    	this(heading, speed, timeout, true, oi, driveSubsystem);
+    		double timeout, TOi oi, TGyroDriveSubsystem driveSubsystem) {
+    	this(heading, speed, timeout, TConst.BRAKE_WHEN_FINISHED, oi, driveSubsystem);
     }
     
 	/**
@@ -47,8 +50,9 @@ public class TDriveOnHeadingCommand extends TSafeCommand {
 	 * @param speed at which to drive in the range 0 <= speed <= 1.0.
 	 * if the speed is set to a very small value, the robot will not
 	 * drive and the command will end on the timeout.
-	 * @param timeout in seconds after which this command will
-	 * end
+	 * @param timeout the time after which this command
+	 * will end automatically. A value of {@link TConst#NO_COMMAND_TIMEOUT}
+	 * will be used as an infinite timeout. 
      * @param brakeWhenFinished {@code true} to brake when the 
      * command finishes {@code false} to coast into the next
      * command.
@@ -57,7 +61,7 @@ public class TDriveOnHeadingCommand extends TSafeCommand {
      */
     public TDriveOnHeadingCommand(double heading, double speed, 
     		double timeout, boolean brakeWhenFinished,
-    		TOi oi, TGryoDriveSubsystem driveSubsystem) {
+    		TOi oi, TGyroDriveSubsystem driveSubsystem) {
     	
     	super(timeout, oi);
     	
@@ -73,13 +77,17 @@ public class TDriveOnHeadingCommand extends TSafeCommand {
     		return;
     	}
     	
-    	this.speed = speed;
+    	setSpeed(speed);
+
+    	this.heading = heading;
     	this.brakeWhenFinished = brakeWhenFinished;
     }
 
     @Override
     protected void initialize() {
-    	driveSubsystem.driveOnHeading(speed, heading);
+    	if (!error) {
+    		driveSubsystem.driveOnHeading(speed, heading);
+    	}
     }
 
     @Override
@@ -92,7 +100,9 @@ public class TDriveOnHeadingCommand extends TSafeCommand {
 
     	// Update the speed and direction each loop.
     	// If the values have not changed, this call will
-    	// have no effect.
+    	// have no effect.  If the speed is changing for 
+    	// acceleration or deceleration purposes, then 
+    	// this call will adjust the speed setpoint.
     	driveSubsystem.driveOnHeading(speed, heading);
     }
 
@@ -104,9 +114,13 @@ public class TDriveOnHeadingCommand extends TSafeCommand {
      * <p>
      * This routine could be used to support acceleration and deceleration
      * when driving on a heading.
+     * @param speed the speed to drive at when tracking the heading.  The
+     * speed should be between 0 and 1.0.  Negative speeds should 
+     * not be used.  If a value is given outside this range, then 
+     * the value will be normalized to be within the range
      */
     public void setSpeed(double speed) {
-    	this.speed = speed;
+    	this.speed = Math.min(1.0, Math.max(speed, 0));
     }
 
     @Override

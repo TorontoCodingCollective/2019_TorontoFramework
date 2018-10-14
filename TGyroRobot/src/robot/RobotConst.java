@@ -1,18 +1,9 @@
 package robot;
 
+import com.torontocodingcollective.TConst;
+
 public class RobotConst {
 	
-	// The TorontoCodingCollective framework was developed to run on different
-	// robots.
-	// Supported robots are 1311 and 1321.
-	public static int robot = 1310;
-
-	
-	public static final boolean INVERTED = true;
-	public static final boolean NOT_INVERTED = false;
-	public static final char LEFT = 'L';
-	public static final char RIGHT = 'R';
-
 	//*********************************************************
 	// Drive Constants
 	//*********************************************************
@@ -48,12 +39,16 @@ public class RobotConst {
 	public static enum Direction { FORWARD, BACKWARD };
 	
 	
+	// The TorontoCodingCollective framework was developed to run on different
+	// robots through the use of multiple mappings and constants.
+	public static int robot = 1310;
+	
 	static {
 		
 		switch (robot) {
 
-		case 1311:
 		case 1310:
+		default:
 			MAX_LOW_GEAR_SPEED = 580.0;    // Encoder counts/sec
 			MAX_HIGH_GEAR_SPEED = 2000.0;
 			
@@ -63,30 +58,13 @@ public class RobotConst {
 			DRIVE_SPEED_PID_KP = 0.3;
 			ENCODER_COUNTS_PER_INCH = 55.6;
 			
-			ELEVATOR_MOTOR_ORIENTATION = NOT_INVERTED;
-			ELEVATOR_ENCODER_ORIENTATION = INVERTED;
+			ELEVATOR_MOTOR_ORIENTATION   = TConst.NOT_INVERTED;
+			ELEVATOR_ENCODER_ORIENTATION = TConst.INVERTED;
 
 			ELEVATOR_ENCODER_COUNTS_PER_INCH = 186.67;
 			INTAKE_TILT_COUNTS_PER_DEGREE = 438;
 			break;
-			
-		case 1321:
-		default:
-			MAX_LOW_GEAR_SPEED = 365.0;    // Encoder counts/sec
-			MAX_HIGH_GEAR_SPEED = 830.0;
-			
-			DRIVE_GYRO_PID_KP = 0.05;
-			DRIVE_GYRO_PID_KI = 0.001;
-			
-			DRIVE_SPEED_PID_KP = 0.75;
-			ENCODER_COUNTS_PER_INCH = 51.5;
-			
-			ELEVATOR_MOTOR_ORIENTATION = NOT_INVERTED;
-			ELEVATOR_ENCODER_ORIENTATION = INVERTED;
-
-			ELEVATOR_ENCODER_COUNTS_PER_INCH = 186.67;
-			INTAKE_TILT_COUNTS_PER_DEGREE = 461.11;
-			break;
 		}
+			
 	}
 }

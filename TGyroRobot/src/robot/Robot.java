@@ -1,14 +1,19 @@
 
 package robot;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.torontocodingcollective.subsystem.TSubsystem;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import robot.commands.AutonomousCommand;
-import robot.oi.GameData;
+import robot.oi.AutoSelector;
 import robot.oi.OI;
 import robot.subsystems.CameraSubsystem;
-import robot.subsystems.ChassisSubsystem;
+import robot.subsystems.DriveSubsystem;
 import robot.subsystems.PneumaticsSubsystem;
 import robot.subsystems.PowerSubsystem;
 
@@ -21,30 +26,38 @@ import robot.subsystems.PowerSubsystem;
  */
 public class Robot extends IterativeRobot {
 
-	public static final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
+	public static final List<TSubsystem> subsystemLs = new ArrayList<TSubsystem>();
+	
+	public static final DriveSubsystem driveSubsystem = new DriveSubsystem();
 	public static final PneumaticsSubsystem pneumaticsSubsystem = new PneumaticsSubsystem();
 	public static final PowerSubsystem powerSubsystem = new PowerSubsystem();
 	public static final CameraSubsystem cameraSubsystem = new CameraSubsystem();
 
 	public static OI oi;
 	
-	
-
 	private Command autoCommand;
-	
+
+	// Add all of the subsystems to the subsystem list
+	static {
+		subsystemLs.add(driveSubsystem);
+		subsystemLs.add(pneumaticsSubsystem);
+		subsystemLs.add(powerSubsystem);
+		subsystemLs.add(cameraSubsystem);
+	}
+
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
 	 */
 	@Override
 	public void robotInit() {
+		
 		oi = new OI();
 		oi.init();
 
-		chassisSubsystem.init();
-		pneumaticsSubsystem.init();
-		powerSubsystem.init();
-		cameraSubsystem.init();
+		for (TSubsystem subsystem: subsystemLs) {
+			subsystem.init();
+		}
 	}
 
 	/**
@@ -59,6 +72,10 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void disabledPeriodic() {
+
+		AutoSelector.updatePeriodic();
+		oi.updatePeriodic();
+		
 		Scheduler.getInstance().run();
 		updatePeriodic();
 	}	
@@ -77,16 +94,13 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		
-		// Initialize the game data
-		GameData.init();
-
-		// Turn on the drive pids
-		Robot.oi.setSpeedPidToggle(true);
-		chassisSubsystem.enableSpeedPids();
+		// Turn on the drive pids for auto
+		Robot.oi.setSpeedPidEnabled(true);
+		driveSubsystem.enableSpeedPids();
 		
 		// Reset the gyro and the encoders
-		Robot.chassisSubsystem.setGyroAngle(0);
-		Robot.chassisSubsystem.resetEncoders();
+		Robot.driveSubsystem.setGyroAngle(0);
+		Robot.driveSubsystem.resetEncoders();
 				
 		// Initialize the robot command after initializing the game data
 		// because the game data will be used in the auto command.
@@ -119,8 +133,8 @@ public class Robot extends IterativeRobot {
 		// Turn off the drive PIDs
 		// Save the battery in teleop by using the 
 		// SpeedController built in braking.
-		Robot.oi.setSpeedPidToggle(false);
-		chassisSubsystem.disableSpeedPids();
+		Robot.oi.setSpeedPidEnabled(false);
+		driveSubsystem.disableSpeedPids();
 
 	}
 
@@ -146,10 +160,14 @@ public class Robot extends IterativeRobot {
 	public void testPeriodic() {
 	}
 	
+	/**
+	 * Update periodic
+	 */
 	private void updatePeriodic() {
-		chassisSubsystem.updatePeriodic();
-		pneumaticsSubsystem.updatePeriodic();
-		powerSubsystem.updatePeriodic();
-		cameraSubsystem.updatePeriodic();
+		
+		// Update all subsystems
+		for (TSubsystem subsystem: subsystemLs) {
+			subsystem.updatePeriodic();
+		}
 	}
 }
