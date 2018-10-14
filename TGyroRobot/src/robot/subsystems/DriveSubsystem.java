@@ -64,6 +64,7 @@ public class DriveSubsystem extends TGyroDriveSubsystem {
 
 	@Override
 	public void init() {
+		shifter.set(LOW_GEAR);
 	};
 
 	// Initialize the default command for the Chassis subsystem.
