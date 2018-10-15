@@ -45,6 +45,8 @@ public class OI extends TOi {
 	private TToggle compressorToggle = new TToggle(driverController, TStick.LEFT);
 	private TToggle speedPidToggle = new TToggle(driverController, TStick.RIGHT);
 
+	private DriveSelector driveSelector = new DriveSelector();
+	
 	@Override
 	public boolean getCancelCommand() {
 		return driverController.getButton(TButton.BACK);
@@ -69,6 +71,26 @@ public class OI extends TOi {
 		return driverController.getPOV();
 	}
 
+	/**
+	 * Get the selected drive type
+	 * @return {@link DriveControlType} selected on the 
+	 * SmartDashboard.  The default drive type is 
+	 * {@link DriveControlType#ARCADE}
+	 */
+	public DriveControlType getSelectedDriveType() {
+		return driveSelector.getDriveControlType();
+	}
+
+	/**
+	 * Get the selected single stick side
+	 * @return {@link TStick} selected on the 
+	 * SmartDashboard.  The default single stick
+	 * drive is {@link TStick#RIGHT}
+	 */
+	public TStick getSelectedSingleStickSide() {
+		return driveSelector.getSingleStickSide();
+	}
+
 	@Override
 	public boolean getSpeedPidEnabled() {
 		return speedPidToggle.get();
@@ -82,10 +104,11 @@ public class OI extends TOi {
 		compressorToggle.set(true);
 		speedPidToggle.set(false);
 	}
-
+	
 	public void setSpeedPidEnabled(boolean state) {
 		speedPidToggle.set(state);
 	}
+	
 
 	public void updatePeriodic() {
 

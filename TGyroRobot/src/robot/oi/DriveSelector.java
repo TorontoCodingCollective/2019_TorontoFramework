@@ -1,11 +1,11 @@
-package com.torontocodingcollective.commands;
+package robot.oi;
 
 import com.torontocodingcollective.oi.TStick;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class TDriveSelector {
+public class DriveSelector {
 
 	public SendableChooser<String> driveControlType;
 	public SendableChooser<String> singleStickSide;
@@ -37,16 +37,16 @@ public class TDriveSelector {
 	/**
 	 * Get the Drive Type
 	 */
-	public TDriveControlType getDriveControlType() {
+	public DriveControlType getDriveControlType() {
 
 		switch (driveControlType.getSelected()) {
 		case DRIVE_CONTROL_TYPE_TANK:
-			return TDriveControlType.TANK;
+			return DriveControlType.TANK;
 		case DRIVE_CONTROL_TYPE_SINGLE_STICK:
-			return TDriveControlType.SINGLE_STICK;
+			return DriveControlType.SINGLE_STICK;
 		case DRIVE_CONTROL_TYPE_ARCADE:
 		default:
-			return TDriveControlType.ARCADE;
+			return DriveControlType.ARCADE;
 		}
 	}
 

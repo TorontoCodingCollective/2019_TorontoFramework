@@ -1,8 +1,5 @@
 package com.torontocodingcollective.oi;
 
-import com.torontocodingcollective.commands.TDriveSelector;
-import com.torontocodingcollective.commands.TDriveControlType;
-
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
@@ -31,8 +28,6 @@ import com.torontocodingcollective.commands.TDriveControlType;
  */
 public abstract class TOi {
 	
-	private TDriveSelector driveSelector = new TDriveSelector();
-
 	/** 
 	 * Return the state of the cancel command button.
 	 * <p>
@@ -76,26 +71,6 @@ public abstract class TOi {
 		return -1;
 	}
 	
-	/**
-	 * Get the selected drive type
-	 * @return {@link TDriveControlType} selected on the 
-	 * SmartDashboard.  The default drive type is 
-	 * {@link TDriveControlType#ARCADE}
-	 */
-	public TDriveControlType getSelectedDriveType() {
-		return driveSelector.getDriveControlType();
-	}
-	
-	/**
-	 * Get the selected single stick side
-	 * @return {@link TStick} selected on the 
-	 * SmartDashboard.  The default single stick
-	 * drive is {@link TStick#RIGHT}
-	 */
-	public TStick getSelectedSingleStickSide() {
-		return driveSelector.getSingleStickSide();
-	}
-	
 	/** 
 	 * Get Speed PID Enabled
 	 * @return {@code true} if the Speed PIDs are enabled,
@@ -108,6 +83,5 @@ public abstract class TOi {
 	 * and put data to the SmartDashboard
 	 */
 	public void updatePeriodic() {
-		driveSelector.updatePeriodic();
 	}
 }

@@ -3,6 +3,7 @@ package com.torontocodingcollective.subsystem;
 import com.torontocodingcollective.TConst;
 import com.torontocodingcollective.pid.TSpeedPID;
 import com.torontocodingcollective.sensors.encoder.TEncoder;
+import com.torontocodingcollective.speedcontroller.TMotorSpeeds;
 import com.torontocodingcollective.speedcontroller.TSpeedController;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -369,6 +370,17 @@ public abstract class TDriveSubsystem extends TSubsystem {
 			rightMotor.set(rightSpeedSetpoint);
 
 		}
+	}
+
+	/**
+	 * Set the speeds on the motors.  This command will be used to set the setpoint
+	 * of the controller if the PIDs are enabled, or to set the left and right
+	 * motor speeds directly if the PIDs are not enabled.
+	 * 
+	 * @param motorSpeeds object containing the left and right motor speeds
+	 */
+	public void setSpeed(TMotorSpeeds motorSpeeds) {
+		setSpeed(motorSpeeds.left, motorSpeeds.right);
 	}
 
 	/**

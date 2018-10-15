@@ -3,6 +3,7 @@ package com.torontocodingcollective.subsystem;
 import com.torontocodingcollective.pid.TGyroPID;
 import com.torontocodingcollective.sensors.encoder.TEncoder;
 import com.torontocodingcollective.sensors.gyro.TGyro;
+import com.torontocodingcollective.speedcontroller.TMotorSpeeds;
 import com.torontocodingcollective.speedcontroller.TSpeedController;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -412,6 +413,20 @@ public abstract class TGyroDriveSubsystem extends TDriveSubsystem {
 	public void setSpeed(double leftSpeedSetpoint, double rightSpeedSetpoint) {
 		disableGyroPid();
 		super.setSpeed(leftSpeedSetpoint, rightSpeedSetpoint);
+	}
+	
+	/**
+	 * Set the speeds on the motors.
+	 * In a TGyroDriveSubsystem, setting the speed on the 
+	 * left and right motors will disable the 
+	 * gyro drive.
+	 * <p>
+	 * {@inheritDoc TDriveSubsystem#setSpeed(TMotorSpeeds)}
+	 */
+	@Override
+	public void setSpeed(TMotorSpeeds motorSpeeds) {
+		disableGyroPid();
+		super.setSpeed(motorSpeeds);
 	}
 	
 	@Override
