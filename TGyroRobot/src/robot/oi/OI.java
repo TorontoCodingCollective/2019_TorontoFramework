@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 /**
- * Driver Controller
+ * Driver Controller (inherited from TOi)
  * 
  * 	Sticks:
  * 		Right Stick  		= Drive Stick 
