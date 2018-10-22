@@ -72,8 +72,6 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void disabledPeriodic() {
-
-		AutoSelector.updatePeriodic();
 		oi.updatePeriodic();
 		
 		Scheduler.getInstance().run();
