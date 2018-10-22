@@ -79,6 +79,7 @@ public class TDifferentialDrive {
 			} else {
 				
 				// Driving backwards 
+				// This routine uses an inverted backwards drive
 				// FIXME: should be selectable
 				//        whether to drive in natural 
 				//        or inverted direction.
