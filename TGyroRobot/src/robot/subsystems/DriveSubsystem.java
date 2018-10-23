@@ -33,20 +33,24 @@ public class DriveSubsystem extends TGyroDriveSubsystem {
                         RobotMap.LEFT_DRIVE_SPEED_CONTROLLER_TYPE,
                         RobotMap.LEFT_DRIVE_SPEED_CONTROLLER_ADDRESS,
                         RobotMap.LEFT_DRIVE_FOLLOWER_SPEED_CONTROLLER_TYPE,
-                        RobotMap.LEFT_DRIVE_FOLLOWER_SPEED_CONTROLLER_ADDRESS, RobotMap.LEFT_DRIVE_MOTOR_ISINVERTED),
+                        RobotMap.LEFT_DRIVE_FOLLOWER_SPEED_CONTROLLER_ADDRESS, 
+                        RobotMap.LEFT_DRIVE_MOTOR_ISINVERTED),
 
                 // Right Speed Controller
                 new TCanSpeedController(
                         RobotMap.RIGHT_DRIVE_SPEED_CONTROLLER_TYPE,
                         RobotMap.RIGHT_DRIVE_SPEED_CONTROLLER_ADDRESS,
                         RobotMap.RIGHT_DRIVE_FOLLOWER_SPEED_CONTROLLER_TYPE,
-                        RobotMap.RIGHT_DRIVE_FOLLOWER_SPEED_CONTROLLER_ADDRESS, RobotMap.RIGHT_DRIVE_MOTOR_ISINVERTED),
+                        RobotMap.RIGHT_DRIVE_FOLLOWER_SPEED_CONTROLLER_ADDRESS, 
+                        RobotMap.RIGHT_DRIVE_MOTOR_ISINVERTED),
 
                 // Gyro used for this subsystem
                 new TAnalogGyro(RobotMap.GYRO_PORT),
 
                 // Gyro PID Constants
-                RobotConst.DRIVE_GYRO_PID_KP, RobotConst.DRIVE_GYRO_PID_KI, RobotConst.DRIVE_MAX_ROTATION_OUTPUT);
+                RobotConst.DRIVE_GYRO_PID_KP, 
+                RobotConst.DRIVE_GYRO_PID_KI, 
+                RobotConst.DRIVE_MAX_ROTATION_OUTPUT);
 
         // Get the encoders attached to the CAN bus speed controller and set the
         // inversion
@@ -57,7 +61,9 @@ public class DriveSubsystem extends TGyroDriveSubsystem {
         rightEncoder.setInverted(RobotMap.RIGHT_DRIVE_ENCODER_ISINVERTED);
 
         super.setEncoders(
-                leftEncoder, rightEncoder, RobotConst.ENCODER_COUNTS_PER_INCH, RobotConst.DRIVE_SPEED_PID_KP,
+                leftEncoder, rightEncoder, 
+                RobotConst.ENCODER_COUNTS_PER_INCH, 
+                RobotConst.DRIVE_SPEED_PID_KP,
                 RobotConst.MAX_LOW_GEAR_SPEED);
     }
 
