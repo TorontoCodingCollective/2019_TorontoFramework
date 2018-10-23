@@ -11,12 +11,13 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 /**
  * Default Drive Command for Game Controllers
  * <p>
- * Implements the following basic controls for the driver.
- * <p>
- * Tank, Arcade or Single Stick drive <br>
- * Back Button to cancel a command <br>
- * Start Button to reset the gyro and encoders <br>
- * POV to rotate to angle
+ * Implements the following basic controls for the driver. 
+ * <ls>
+ * <li>Tank, Arcade or Single Stick drive 
+ * <li>Back Button to cancel a command 
+ * <li>Start Button to reset the gyro and encoders 
+ * <li>POV to rotate to angle 
+ * </ls>
  */
 public class TDefaultDriveCommand extends Command {
 
