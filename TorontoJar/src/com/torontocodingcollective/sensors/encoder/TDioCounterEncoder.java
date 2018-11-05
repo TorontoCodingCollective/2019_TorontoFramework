@@ -9,18 +9,18 @@ import edu.wpi.first.wpilibj.Counter;
  * <br>
  * Inversion of the counter encoder is not supported
  */
-public class TPwmCounterEncoder extends TEncoder {
+public class TDioCounterEncoder extends TEncoder {
 
     Counter counter;
 
     /**
-     * Encoder constructor. Construct a Encoder on the given pwm channel.
+     * Encoder constructor. Construct a Encoder on the given DIO channel.
      * <p>
      * 
      * @param pwmChannel
      *            The DIO channel. 0-9 are on-board, 10-25 are on the MXP port
      */
-    public TPwmCounterEncoder(int pwmChannel) {
+    public TDioCounterEncoder(int pwmChannel) {
         super(false);
         this.counter = new Counter(pwmChannel);
 

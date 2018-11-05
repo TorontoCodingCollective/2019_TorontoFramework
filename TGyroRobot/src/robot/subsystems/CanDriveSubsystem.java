@@ -17,7 +17,7 @@ import robot.commands.drive.DefaultDriveCommand;
  * This class is describes all of the components in a differential (left/right)
  * drive subsystem.
  */
-public class DriveSubsystem extends TGyroDriveSubsystem {
+public class CanDriveSubsystem extends TGyroDriveSubsystem {
 
     private static final boolean LOW_GEAR     = false;
     private static final boolean HIGH_GEAR    = true;
@@ -25,24 +25,24 @@ public class DriveSubsystem extends TGyroDriveSubsystem {
     private Solenoid             shifter      = new Solenoid(RobotMap.SHIFTER_PNEUMATIC_PORT);
     private boolean              turboEnabled = false;
 
-    public DriveSubsystem() {
+    public CanDriveSubsystem() {
 
         super(
                 // Left Speed Controller
                 new TCanSpeedController(
-                        RobotMap.LEFT_DRIVE_SPEED_CONTROLLER_TYPE,
-                        RobotMap.LEFT_DRIVE_SPEED_CONTROLLER_ADDRESS,
-                        RobotMap.LEFT_DRIVE_FOLLOWER_SPEED_CONTROLLER_TYPE,
-                        RobotMap.LEFT_DRIVE_FOLLOWER_SPEED_CONTROLLER_ADDRESS, 
-                        RobotMap.LEFT_DRIVE_MOTOR_ISINVERTED),
+                        RobotMap.LEFT_DRIVE_CAN_SPEED_CONTROLLER_TYPE,
+                        RobotMap.LEFT_DRIVE_CAN_SPEED_CONTROLLER_ADDRESS,
+                        RobotMap.LEFT_DRIVE_CAN_FOLLOWER_SPEED_CONTROLLER_TYPE,
+                        RobotMap.LEFT_DRIVE_CAN_FOLLOWER_SPEED_CONTROLLER_ADDRESS, 
+                        RobotMap.LEFT_DRIVE_CAN_MOTOR_ISINVERTED),
 
                 // Right Speed Controller
                 new TCanSpeedController(
-                        RobotMap.RIGHT_DRIVE_SPEED_CONTROLLER_TYPE,
-                        RobotMap.RIGHT_DRIVE_SPEED_CONTROLLER_ADDRESS,
-                        RobotMap.RIGHT_DRIVE_FOLLOWER_SPEED_CONTROLLER_TYPE,
-                        RobotMap.RIGHT_DRIVE_FOLLOWER_SPEED_CONTROLLER_ADDRESS, 
-                        RobotMap.RIGHT_DRIVE_MOTOR_ISINVERTED),
+                        RobotMap.RIGHT_DRIVE_CAN_SPEED_CONTROLLER_TYPE,
+                        RobotMap.RIGHT_DRIVE_CAN_SPEED_CONTROLLER_ADDRESS,
+                        RobotMap.RIGHT_DRIVE_CAN_FOLLOWER_SPEED_CONTROLLER_TYPE,
+                        RobotMap.RIGHT_DRIVE_CAN_FOLLOWER_SPEED_CONTROLLER_ADDRESS, 
+                        RobotMap.RIGHT_DRIVE_CAN_MOTOR_ISINVERTED),
 
                 // Gyro used for this subsystem
                 new TAnalogGyro(RobotMap.GYRO_PORT),
@@ -54,11 +54,11 @@ public class DriveSubsystem extends TGyroDriveSubsystem {
 
         // Get the encoders attached to the CAN bus speed controller and set the
         // inversion
-        TEncoder leftEncoder = ((TCanSpeedController) super.leftMotor).getEncoder();
-        leftEncoder.setInverted(RobotMap.LEFT_DRIVE_ENCODER_ISINVERTED);
+        TEncoder leftEncoder = getSpeedController(TSide.LEFT).getEncoder();
+        leftEncoder.setInverted(RobotMap.LEFT_DRIVE_CAN_ENCODER_ISINVERTED);
 
-        TEncoder rightEncoder = ((TCanSpeedController) super.rightMotor).getEncoder();
-        rightEncoder.setInverted(RobotMap.RIGHT_DRIVE_ENCODER_ISINVERTED);
+        TEncoder rightEncoder = getSpeedController(TSide.RIGHT).getEncoder();
+        rightEncoder.setInverted(RobotMap.RIGHT_DRIVE_CAN_ENCODER_ISINVERTED);
 
         super.setEncoders(
                 leftEncoder, rightEncoder, 
@@ -70,7 +70,7 @@ public class DriveSubsystem extends TGyroDriveSubsystem {
     @Override
     public void init() {
         shifter.set(LOW_GEAR);
-    };
+    }
 
     // Initialize the default command for the Chassis subsystem.
     @Override
