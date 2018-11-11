@@ -16,6 +16,9 @@ import com.torontocodingcollective.subsystem.TGyroDriveSubsystem;
  */
 public class TDriveOnHeadingCommand extends TSafeCommand {
 
+    private static final String COMMAND_NAME = 
+            TDriveOnHeadingCommand.class.getSimpleName();
+    
     private double                    heading;
     private double                    speed;
     private final boolean             brakeWhenFinished;
@@ -83,8 +86,9 @@ public class TDriveOnHeadingCommand extends TSafeCommand {
 
         if (heading < 0 || heading >= 360) {
             System.out.println(
-                    "Heading on DriveOnHeadingCommand must be >= 0 or < 360 degrees. " + heading
-                            + " is invalid.  Command ending immediately");
+                    "Heading on " + COMMAND_NAME 
+                    + " must be >= 0 or < 360 degrees. " + heading
+                    + " is invalid.  Command ending immediately");
             error = true;
             this.brakeWhenFinished = true;
             return;
@@ -97,22 +101,24 @@ public class TDriveOnHeadingCommand extends TSafeCommand {
     }
 
     @Override
-    protected String getCommandName() { return "TDriveOnHeadingCommand"; }
+    protected String getCommandName() { return COMMAND_NAME; }
     
     @Override
-    protected String getCommandDesc() { 
-        return "TDriveOnHeadingCommand(" 
-                + "heading " + this.heading 
+    protected String getParmDesc() { 
+        return "heading " + this.heading 
                 + ", speed " + this.speed 
                 + ", brake " + this.brakeWhenFinished 
-                + ") extends " + super.getCommandDesc(); 
+                + ", " + super.getParmDesc(); 
     }
-    
 
     @Override
     protected void initialize() {
         
-        logMessage(getCommandDesc() + " starting");
+        // Only print the command start message
+        // if this command was not subclassed
+        if (getCommandName().equals(COMMAND_NAME)) {
+            logMessage(getParmDesc() + " starting");
+        }
 
         if (!error) {
             driveSubsystem.driveOnHeading(speed, heading);

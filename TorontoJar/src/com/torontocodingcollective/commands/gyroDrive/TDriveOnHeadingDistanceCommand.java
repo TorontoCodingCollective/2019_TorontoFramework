@@ -9,6 +9,9 @@ import com.torontocodingcollective.subsystem.TGyroDriveSubsystem;
  */
 public class TDriveOnHeadingDistanceCommand extends TDriveOnHeadingCommand {
 
+    private static final String COMMAND_NAME = 
+            TDriveOnHeadingDistanceCommand.class.getSimpleName();
+    
     double                            distanceInches = 0; // in inches
     private final TGyroDriveSubsystem driveSubsystem;
 
@@ -43,20 +46,23 @@ public class TDriveOnHeadingDistanceCommand extends TDriveOnHeadingCommand {
     }
 
     @Override
-    protected String getCommandName() { return "TDriveOnHeadingDistanceCommand"; }
+    protected String getCommandName() { return COMMAND_NAME; }
     
     @Override
-    protected String getCommandDesc() { 
-        return "TDriveOnHeadingDistanceCommand(" 
-                + "dist " + this.distanceInches 
-                + ") extends " + super.getCommandDesc(); 
+    protected String getParmDesc() { 
+        return "dist " + this.distanceInches 
+                + ", " + super.getParmDesc(); 
     }
     
 
     @Override
     protected void initialize() {
 
-        logMessage(getCommandDesc() + " starting");
+        // Only print the command start message
+        // if this command was not subclassed
+        if (getCommandName().equals(COMMAND_NAME)) {
+            logMessage(getParmDesc() + " starting");
+        }
 
         super.initialize();
         driveSubsystem.resetEncoders();

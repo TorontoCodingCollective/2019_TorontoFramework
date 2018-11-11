@@ -21,6 +21,9 @@ import edu.wpi.first.wpilibj.command.Scheduler;
  */
 public class TDefaultDriveCommand extends TSafeCommand {
 
+    private final static String COMMAND_NAME = 
+            TDefaultDriveCommand.class.getSimpleName();
+    
     private final TOi                 oi;
     private final TDriveSubsystem     driveSubsystem;
     private final TGyroDriveSubsystem gyroDriveSubsystem;
@@ -42,17 +45,21 @@ public class TDefaultDriveCommand extends TSafeCommand {
     }
 
     @Override
-    protected String getCommandName() { return "TDefaultDriveCommand"; }
+    protected String getCommandName() { return COMMAND_NAME; }
     
     @Override
-    protected String getCommandDesc() { 
-        return "TDefaultDriveCommand" 
-                + " extends " + super.getCommandDesc(); 
+    protected String getParmDesc() { 
+        return super.getParmDesc(); 
     }
     
     @Override
     protected void initialize() {
-        logMessage(getCommandDesc() + " starting");
+        
+        // Only print the command start message
+        // if this command was not subclassed
+        if (getCommandName().equals(COMMAND_NAME)) {
+            logMessage(getParmDesc() + " starting");
+        }
     }
 
     @Override

@@ -60,14 +60,13 @@ public abstract class TSafeCommand extends Command {
      */
     protected abstract String getCommandName();
 
-    protected String getCommandDesc() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("TSafeCommand(");
+    protected String getParmDesc() {
         if (timeout >= 0) {
-            sb.append("Timeout ").append(timeout);
+            return "Timeout ";
         }
-        sb.append(')');
-        return sb.toString();
+        else {
+            return "No timeout";
+        }
     }
 
     /**

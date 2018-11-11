@@ -17,6 +17,9 @@ import com.torontocodingcollective.subsystem.TGyroDriveSubsystem;
  */
 public class TRotateToHeadingCommand extends TSafeCommand {
 
+    private static final String COMMAND_NAME = 
+            TRotateToHeadingCommand.class.getSimpleName();
+    
     public static final double        DEFAULT_TIMEOUT = 5.0;
 
     private final double              heading;
@@ -111,21 +114,25 @@ public class TRotateToHeadingCommand extends TSafeCommand {
     }
 
     @Override
-    protected String getCommandName() { return "TRotateToHeadingCommand"; }
+    protected String getCommandName() { return COMMAND_NAME; }
     
     @Override
-    protected String getCommandDesc() { 
-        return "TRotateToHeadingCommand(" 
-                + "heading " + this.heading 
+    protected String getParmDesc() { 
+        return "target heading " + this.heading 
                 + ", maxRotation " + this.maxRotationOutput 
-                + ") extends " + super.getCommandDesc(); 
+                + ", " + super.getParmDesc(); 
     }
     
     @Override
     protected void initialize() {
 
-        logMessage(getCommandDesc() + " starting");
-        logMessage("current heading " + TUtil.round(driveSubsystem.getGryoAngle(), 1));
+        // Only print the command start message
+        // if this command was not subclassed
+        if (getCommandName().equals(COMMAND_NAME)) {
+            logMessage(getParmDesc() + " starting");
+        }
+
+        logMessage("current heading " + driveSubsystem.getGryoAngle());
         
         if (error) {
             return;
