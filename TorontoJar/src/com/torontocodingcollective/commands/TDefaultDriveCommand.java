@@ -5,7 +5,6 @@ import com.torontocodingcollective.oi.TOi;
 import com.torontocodingcollective.subsystem.TDriveSubsystem;
 import com.torontocodingcollective.subsystem.TGyroDriveSubsystem;
 
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 
 /**
@@ -19,13 +18,16 @@ import edu.wpi.first.wpilibj.command.Scheduler;
  * <li>POV to rotate to angle 
  * </ls>
  */
-public class TDefaultDriveCommand extends Command {
+public class TDefaultDriveCommand extends TSafeCommand {
 
     private final TOi                 oi;
     private final TDriveSubsystem     driveSubsystem;
     private final TGyroDriveSubsystem gyroDriveSubsystem;
 
     public TDefaultDriveCommand(TOi oi, TDriveSubsystem driveSubsystem) {
+
+        super(oi);
+        
         requires(driveSubsystem);
 
         this.driveSubsystem = driveSubsystem;
@@ -39,7 +41,17 @@ public class TDefaultDriveCommand extends Command {
     }
 
     @Override
+    protected String getCommandName() { return "TDefaultDriveCommand"; }
+    
+    @Override
+    protected String getCommandDesc() { 
+        return "TDefaultDriveCommand" 
+                + " extends " + super.getCommandDesc(); 
+    }
+    
+    @Override
     protected void initialize() {
+        logMessage(getCommandDesc() + " starting");
     }
 
     @Override
@@ -74,23 +86,11 @@ public class TDefaultDriveCommand extends Command {
                 Scheduler.getInstance().add(new TRotateToHeadingCommand(heading, oi, gyroDriveSubsystem));
             }
         }
-
     }
 
     // Make this return true when this Command no longer needs to run execute()
     @Override
     protected boolean isFinished() {
         return false;
-    }
-
-    // Called once after isFinished returns true
-    @Override
-    protected void end() {
-    }
-
-    // Called when another command which requires one or more of the same
-    // subsystems is scheduled to run
-    @Override
-    protected void interrupted() {
     }
 }

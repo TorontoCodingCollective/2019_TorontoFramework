@@ -71,7 +71,8 @@ public class TDriveOnHeadingCommand extends TSafeCommand {
      * @param driveSubsystem
      *            that extends the TGyroDriveSubsystem
      */
-    public TDriveOnHeadingCommand(double heading, double speed, double timeout, boolean brakeWhenFinished, TOi oi,
+    public TDriveOnHeadingCommand(double heading, double speed, double timeout, 
+            boolean brakeWhenFinished, TOi oi,
             TGyroDriveSubsystem driveSubsystem) {
 
         super(timeout, oi);
@@ -96,7 +97,23 @@ public class TDriveOnHeadingCommand extends TSafeCommand {
     }
 
     @Override
+    protected String getCommandName() { return "TDriveOnHeadingCommand"; }
+    
+    @Override
+    protected String getCommandDesc() { 
+        return "TDriveOnHeadingCommand(" 
+                + "heading " + this.heading 
+                + ", speed " + this.speed 
+                + ", brake " + this.brakeWhenFinished 
+                + " extends " + super.getCommandDesc(); 
+    }
+    
+
+    @Override
     protected void initialize() {
+        
+        logMessage(getCommandDesc() + " starting");
+
         if (!error) {
             driveSubsystem.driveOnHeading(speed, heading);
         }
@@ -141,6 +158,7 @@ public class TDriveOnHeadingCommand extends TSafeCommand {
     protected boolean isFinished() {
 
         if (error) {
+            logMessage("Ended with error");
             return true;
         }
 

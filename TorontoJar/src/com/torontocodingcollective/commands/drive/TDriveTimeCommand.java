@@ -73,9 +73,23 @@ public class TDriveTimeCommand extends TSafeCommand {
 
         this.brakeWhenFinished = brakeWhenFinished;
     }
-
+    
+    @Override
+    protected String getCommandName() { return "TDriveTimeCommand"; }
+    
+    @Override
+    protected String getCommandDesc() { 
+        return "TDriveTimeCommand(" 
+                + "speed " + this.speed 
+                + ", brake " + this.brakeWhenFinished 
+                + ") extends " + super.getCommandDesc(); 
+    }
+    
     @Override
     protected void initialize() {
+        
+        logMessage(getCommandDesc() + " starting");
+
         driveSubsystem.setSpeed(speed, speed);
     }
 
@@ -126,4 +140,5 @@ public class TDriveTimeCommand extends TSafeCommand {
             driveSubsystem.setSpeed(0, 0);
         }
     }
+    
 }

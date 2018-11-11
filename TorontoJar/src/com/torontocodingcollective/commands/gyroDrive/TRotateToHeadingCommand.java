@@ -47,8 +47,8 @@ public class TRotateToHeadingCommand extends TSafeCommand {
      * @param driveSubsystem
      *            that extends the TGyroDriveSubsystem
      */
-    public TRotateToHeadingCommand(double heading, double maxRotationOutput, double timeout, TOi oi,
-            TGyroDriveSubsystem driveSubsystem) {
+    public TRotateToHeadingCommand(double heading, double maxRotationOutput, double timeout, 
+            TOi oi, TGyroDriveSubsystem driveSubsystem) {
 
         super(timeout, oi);
 
@@ -57,7 +57,7 @@ public class TRotateToHeadingCommand extends TSafeCommand {
         requires(driveSubsystem);
 
         if (heading < 0 || heading >= 360) {
-            System.out.println(
+            logMessage(
                     "Heading on DriveOnHeadingCommand must be >= 0 or < 360 degrees. " + heading
                             + " is invalid.  Command ending immediately");
             this.heading = 0;
@@ -85,7 +85,8 @@ public class TRotateToHeadingCommand extends TSafeCommand {
      * @param driveSubsystem
      *            that extends the TGyroDriveSubsystem
      */
-    public TRotateToHeadingCommand(double heading, double timeout, TOi oi, TGyroDriveSubsystem driveSubsystem) {
+    public TRotateToHeadingCommand(double heading, double timeout, 
+            TOi oi, TGyroDriveSubsystem driveSubsystem) {
 
         this(heading, -1, timeout, oi, driveSubsystem);
     }
@@ -102,14 +103,29 @@ public class TRotateToHeadingCommand extends TSafeCommand {
      * @param driveSubsystem
      *            that extends the TGyroDriveSubsystem
      */
-    public TRotateToHeadingCommand(double heading, TOi oi, TGyroDriveSubsystem driveSubsystem) {
+    public TRotateToHeadingCommand(double heading, 
+            TOi oi, TGyroDriveSubsystem driveSubsystem) {
 
         this(heading, -1, DEFAULT_TIMEOUT, oi, driveSubsystem);
     }
 
     @Override
+    protected String getCommandName() { return "TRotateToHeadingCommand"; }
+    
+    @Override
+    protected String getCommandDesc() { 
+        return "TRotateToHeadingCommand(" 
+                + "heading " + this.heading 
+                + ", maxRotation " + this.maxRotationOutput 
+                + " extends " + super.getCommandDesc(); 
+    }
+    
+    @Override
     protected void initialize() {
 
+        logMessage(getCommandDesc() + " starting");
+        logMessage("current heading " + driveSubsystem.getGryoAngle());
+        
         if (error) {
             return;
         }
@@ -125,6 +141,7 @@ public class TRotateToHeadingCommand extends TSafeCommand {
     protected boolean isFinished() {
 
         if (error) {
+            logMessage("finished with errors");
             return true;
         }
 
@@ -137,7 +154,9 @@ public class TRotateToHeadingCommand extends TSafeCommand {
         double rotationRate = driveSubsystem.getGyroRate();
         double headingError = driveSubsystem.getGyroHeadingError();
 
-        if (Math.abs(headingError) <= 4 && Math.abs(rotationRate) < 4) {
+        if (Math.abs(headingError) <= 1.5 && Math.abs(rotationRate) < 3) {
+            logMessage("finished at heading " + driveSubsystem.getGryoAngle()
+            + " with error " + headingError + ", rotation rate " + rotationRate);
             return true;
         }
 

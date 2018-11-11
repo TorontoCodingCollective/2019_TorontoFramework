@@ -29,6 +29,7 @@ public class DefaultDriveCommand extends TDefaultDriveCommand {
     // Called just before this Command runs the first time
     @Override
     protected void initialize() {
+        super.initialize();
     }
 
     // Called repeatedly when this Command is scheduled to run

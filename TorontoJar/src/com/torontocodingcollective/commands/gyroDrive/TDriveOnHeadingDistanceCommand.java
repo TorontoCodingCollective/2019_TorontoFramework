@@ -43,7 +43,21 @@ public class TDriveOnHeadingDistanceCommand extends TDriveOnHeadingCommand {
     }
 
     @Override
+    protected String getCommandName() { return "TDriveOnHeadingDistanceCommand"; }
+    
+    @Override
+    protected String getCommandDesc() { 
+        return "TDriveOnHeadingDistanceCommand(" 
+                + "dist " + this.distanceInches 
+                + " extends " + super.getCommandDesc(); 
+    }
+    
+
+    @Override
     protected void initialize() {
+
+        logMessage(getCommandDesc() + " starting");
+
         super.initialize();
         driveSubsystem.resetEncoders();
     }
@@ -56,6 +70,8 @@ public class TDriveOnHeadingDistanceCommand extends TDriveOnHeadingCommand {
         }
 
         if (driveSubsystem.getDistanceInches() > distanceInches) {
+            logMessage("Command ending at distance " + 
+                    driveSubsystem.getDistanceInches() + "inches");
             return true;
         }
 
