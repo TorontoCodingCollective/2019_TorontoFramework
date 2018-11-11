@@ -118,9 +118,17 @@ public class TRotateToHeadingCommand extends TSafeCommand {
     
     @Override
     protected String getParmDesc() { 
-        return "target heading " + this.heading 
-                + ", maxRotation " + this.maxRotationOutput 
-                + ", " + super.getParmDesc(); 
+        StringBuilder sb = new StringBuilder();
+        sb.append("target heading " + this.heading);
+        sb.append(", maxRotation ");
+        if (maxRotationOutput == -1.0) {
+            sb.append(TUtil.round(driveSubsystem.getMaxRotationOutput(), 2));
+        }
+        else {
+            sb.append(maxRotationOutput);
+        }
+        sb.append(", ").append(super.getParmDesc()); 
+        return sb.toString();
     }
     
     @Override
@@ -153,14 +161,17 @@ public class TRotateToHeadingCommand extends TSafeCommand {
             return true;
         }
 
-        if (super.isFinished()) {
-            return true;
-        }
-
         // If the angle is close to the required heading and the
         // rotational speed is low (not an overshoot), then end
         double rotationRate = driveSubsystem.getGyroRate();
         double headingError = driveSubsystem.getGyroHeadingError();
+
+        if (super.isFinished()) {
+            logMessage("ended at heading " + TUtil.round(driveSubsystem.getGryoAngle(), 1)
+            + " with error " + TUtil.round(headingError, 2) 
+            + ", rotation rate " + TUtil.round(rotationRate, 1));
+            return true;
+        }
 
         if (Math.abs(headingError) <= 1.5 && Math.abs(rotationRate) < 3) {
             logMessage("finished at heading " + TUtil.round(driveSubsystem.getGryoAngle(), 1)

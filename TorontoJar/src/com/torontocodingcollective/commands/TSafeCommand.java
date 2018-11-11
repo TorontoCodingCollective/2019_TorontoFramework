@@ -1,6 +1,7 @@
 package com.torontocodingcollective.commands;
 
 import com.torontocodingcollective.TConst;
+import com.torontocodingcollective.TUtil;
 import com.torontocodingcollective.oi.TOi;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -62,7 +63,7 @@ public abstract class TSafeCommand extends Command {
 
     protected String getParmDesc() {
         if (timeout >= 0) {
-            return "Timeout ";
+            return "Timeout " + timeout;
         }
         else {
             return "No timeout";
@@ -90,7 +91,7 @@ public abstract class TSafeCommand extends Command {
         }
 
         // Round the match time to one decimal
-        double matchTime = Math.round(driverStation.getMatchTime() * 10.0) / 10.0;
+        double matchTime = TUtil.round(driverStation.getMatchTime(), 2);
         sb.append(matchTime).append(' ');
 
         sb.append(getCommandName()).append(" : ");
@@ -104,12 +105,14 @@ public abstract class TSafeCommand extends Command {
     protected boolean isFinished() {
 
         if (isCancelled()) {
-            logMessage("command cancelled by user.");
+            logMessage("command cancelled by user after "
+                    + TUtil.round(timeSinceInitialized(), 2) + "s");
             return true;
         }
 
         if (super.isTimedOut()) {
-            logMessage("command timed out.");
+            logMessage("command timed out after "
+                    + TUtil.round(timeSinceInitialized(), 2) + "s");
             return true;
         }
 

@@ -72,6 +72,8 @@ public class TDriveOnHeadingDistanceCommand extends TDriveOnHeadingCommand {
     protected boolean isFinished() {
 
         if (super.isFinished()) {
+            logMessage("Command ending at distance " + 
+                    driveSubsystem.getDistanceInches() + "inches");
             return true;
         }
 

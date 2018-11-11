@@ -375,6 +375,15 @@ public abstract class TGyroDriveSubsystem extends TDriveSubsystem {
     public void setMaxRotationOutput(double maxRotationOutput) {
         this.maxRotationOutput = maxRotationOutput;
     }
+    
+    /**
+     * Get the maxRotationOutput used to rotate to angle when
+     * no rotation angle is specified
+     * @return double maxRotationOutput
+     */
+    public double getMaxRotationOutput() {
+        return maxRotationOutput;
+    }
 
     private double setRotateToHeadingSpeeds() {
 

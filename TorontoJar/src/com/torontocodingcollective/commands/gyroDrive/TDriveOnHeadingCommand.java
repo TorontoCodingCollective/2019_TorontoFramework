@@ -164,7 +164,7 @@ public class TDriveOnHeadingCommand extends TSafeCommand {
     protected boolean isFinished() {
 
         if (error) {
-            logMessage("Ended with error");
+            logMessage("Ended with error - see previous message for details");
             return true;
         }
 

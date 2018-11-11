@@ -46,7 +46,7 @@ public class DefaultDriveCommand extends TDefaultDriveCommand {
         // Print the command parameters if this is the current
         // called command (it was not sub-classed)
         if (getCommandName().equals(COMMAND_NAME)) {
-            logMessage(getParmDesc() + "starting");
+            logMessage(getParmDesc() + " starting");
         }
         
         super.initialize();
