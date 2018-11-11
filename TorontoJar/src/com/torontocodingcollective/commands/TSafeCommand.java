@@ -61,7 +61,13 @@ public abstract class TSafeCommand extends Command {
     protected abstract String getCommandName();
 
     protected String getCommandDesc() {
-        return "TSafeCommand(Timeout " + timeout + ")";
+        StringBuilder sb = new StringBuilder();
+        sb.append("TSafeCommand(");
+        if (timeout >= 0) {
+            sb.append("Timeout ").append(timeout);
+        }
+        sb.append(')');
+        return sb.toString();
     }
 
     /**
@@ -74,7 +80,7 @@ public abstract class TSafeCommand extends Command {
     protected void logMessage(String message) {
 
         DriverStation driverStation = DriverStation.getInstance();
-        
+
         // Mark the message with the time and command name
         StringBuilder sb = new StringBuilder();
         if (driverStation.isAutonomous()) {
@@ -83,34 +89,34 @@ public abstract class TSafeCommand extends Command {
         else {
             sb.append("Teleop: ");
         }
-        
+
         // Round the match time to one decimal
         double matchTime = Math.round(driverStation.getMatchTime() * 10.0) / 10.0;
         sb.append(matchTime).append(' ');
 
         sb.append(getCommandName()).append(" : ");
-        
+
         sb.append(message);
-        
+
         System.out.println(sb.toString());
     }
 
     @Override
     protected boolean isFinished() {
-        
+
         if (isCancelled()) {
             logMessage("command cancelled by user.");
             return true;
         }
-        
+
         if (super.isTimedOut()) {
             logMessage("command timed out.");
             return true;
         }
-        
+
         return false;
     }
-    
+
     @Override
     protected void interrupted() {
         logMessage("interrupted");

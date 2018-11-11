@@ -39,7 +39,7 @@ public abstract class TGyroDriveSubsystem extends TDriveSubsystem {
      *            Default Proportional gain for the gyro angle pid. The gyro PID is
      *            displayed on the SmartDashboard and can be adjusted through that
      *            interface
-     * @param gyroKP
+     * @param gyroKI
      *            Default Integral gain for the gyro angle pid. The gyro PID is
      *            displayed on the SmartDashboard and can be adjusted through that
      *            interface

@@ -105,7 +105,7 @@ public class TDriveOnHeadingCommand extends TSafeCommand {
                 + "heading " + this.heading 
                 + ", speed " + this.speed 
                 + ", brake " + this.brakeWhenFinished 
-                + " extends " + super.getCommandDesc(); 
+                + ") extends " + super.getCommandDesc(); 
     }
     
 

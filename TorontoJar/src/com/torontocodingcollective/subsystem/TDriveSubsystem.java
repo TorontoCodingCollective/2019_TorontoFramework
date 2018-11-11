@@ -1,5 +1,6 @@
 package com.torontocodingcollective.subsystem;
 
+import com.torontocodingcollective.TUtil;
 import com.torontocodingcollective.pid.TSpeedPID;
 import com.torontocodingcollective.sensors.encoder.TEncoder;
 import com.torontocodingcollective.speedcontroller.TSpeedController;
@@ -159,7 +160,9 @@ public abstract class TDriveSubsystem extends TSubsystem {
         if (encoderCountsPerInch == 0) {
             return getEncoderDistance();
         }
-        return getEncoderDistance() / encoderCountsPerInch;
+        
+        // Round to 2 decimal places
+        return TUtil.round(getEncoderDistance() / encoderCountsPerInch, 2);
     }
 
     /** 

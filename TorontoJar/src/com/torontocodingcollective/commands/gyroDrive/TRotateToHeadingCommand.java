@@ -1,6 +1,7 @@
 package com.torontocodingcollective.commands.gyroDrive;
 
 import com.torontocodingcollective.TConst;
+import com.torontocodingcollective.TUtil;
 import com.torontocodingcollective.commands.TSafeCommand;
 import com.torontocodingcollective.oi.TOi;
 import com.torontocodingcollective.subsystem.TGyroDriveSubsystem;
@@ -117,14 +118,14 @@ public class TRotateToHeadingCommand extends TSafeCommand {
         return "TRotateToHeadingCommand(" 
                 + "heading " + this.heading 
                 + ", maxRotation " + this.maxRotationOutput 
-                + " extends " + super.getCommandDesc(); 
+                + ") extends " + super.getCommandDesc(); 
     }
     
     @Override
     protected void initialize() {
 
         logMessage(getCommandDesc() + " starting");
-        logMessage("current heading " + driveSubsystem.getGryoAngle());
+        logMessage("current heading " + TUtil.round(driveSubsystem.getGryoAngle(), 1));
         
         if (error) {
             return;
@@ -155,8 +156,9 @@ public class TRotateToHeadingCommand extends TSafeCommand {
         double headingError = driveSubsystem.getGyroHeadingError();
 
         if (Math.abs(headingError) <= 1.5 && Math.abs(rotationRate) < 3) {
-            logMessage("finished at heading " + driveSubsystem.getGryoAngle()
-            + " with error " + headingError + ", rotation rate " + rotationRate);
+            logMessage("finished at heading " + TUtil.round(driveSubsystem.getGryoAngle(), 1)
+            + " with error " + TUtil.round(headingError, 2) 
+            + ", rotation rate " + TUtil.round(rotationRate, 1));
             return true;
         }
 

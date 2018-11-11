@@ -1,5 +1,6 @@
 package com.torontocodingcollective.commands;
 
+import com.torontocodingcollective.TConst;
 import com.torontocodingcollective.commands.gyroDrive.TRotateToHeadingCommand;
 import com.torontocodingcollective.oi.TOi;
 import com.torontocodingcollective.subsystem.TDriveSubsystem;
@@ -26,7 +27,7 @@ public class TDefaultDriveCommand extends TSafeCommand {
 
     public TDefaultDriveCommand(TOi oi, TDriveSubsystem driveSubsystem) {
 
-        super(oi);
+        super(TConst.NO_COMMAND_TIMEOUT, oi);
         
         requires(driveSubsystem);
 

@@ -49,7 +49,7 @@ public class TDriveOnHeadingDistanceCommand extends TDriveOnHeadingCommand {
     protected String getCommandDesc() { 
         return "TDriveOnHeadingDistanceCommand(" 
                 + "dist " + this.distanceInches 
-                + " extends " + super.getCommandDesc(); 
+                + ") extends " + super.getCommandDesc(); 
     }
     
 
